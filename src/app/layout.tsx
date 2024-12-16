@@ -1,3 +1,4 @@
+import Nav from '@/components/Nav';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -25,7 +26,9 @@ export default function RootLayout({
   return (
     <html lang='ko'>
       <body className='font-serif'>
-        <header className='text-xl px-4 py-2'>Rimi&apos;s Bookmark</header>
+        <header>
+          <Nav />
+        </header>
         <hr />
         <main>{children}</main>
         <hr />

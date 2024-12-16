@@ -1,18 +1,40 @@
-export default function ItemEditor() {
+import { FormEvent } from 'react';
+
+export default function ItemEditor({ onClose }: { onClose: () => void }) {
+  const handlerSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
   return (
-    <div className='flex flex-col border border-black rounded-md h-[150px] w-[180px] p-4'>
-      <div>
-        <label>Bookmark Name :</label>
-        <input className='mb-2 border border-gray-400 rounded-md px-2' />
-      </div>
-      <div className='flex items-center justify-center mb-9'>
-        <input type='checkbox' />
-        <p className='px-1'>이동 시 자동 삭제</p>
-      </div>
-      <div className='flex gap-2 ml-auto'>
-        <button>Reset</button>
-        <button>Save</button>
-      </div>
+    <div className='border border-black rounded-lg'>
+      <form onSubmit={handlerSubmit} className='p-4'>
+        <div className='flex flex-col mb-4'>
+          <label>URL</label>
+          <div className='grid grid-cols-4'>
+            <input className='border border-gray-400 rounded-md px-2 col-span-3' />
+            <button className='col-span-1'>Reset</button>
+          </div>
+        </div>
+        <div className='flex flex-col mb-4'>
+          <label>Title</label>
+          <input className='border border-gray-400 rounded-md px-2' />
+        </div>
+        <div className='flex flex-col mb-4'>
+          <label>Description</label>
+          <input className='border border-gray-400 rounded-md px-2' />
+        </div>
+        <div className='flex flex-col mb-8'>
+          <label>Image URL</label>
+          <input className='border border-gray-400 rounded-md px-2' />
+        </div>
+        <div className='flex justify-end gap-2'>
+          <button type='button'>Delete</button>
+          <button onClick={onClose} type='reset'>
+            Reset
+          </button>
+          <button type='submit'>Save</button>
+        </div>
+      </form>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import BookmarkList from '@/components/common/organisms/BookmarkList';
+import Button from '@/components/ui/Button';
 
 export default function Home() {
   return (
@@ -7,7 +8,7 @@ export default function Home() {
         <div className='overflow-x-scroll w-full'>
           <div className='flex min-w-max gap-3'>
             <BookmarkList />
-            <button className='h-fit self-start'>+Add Item</button>
+            <Button className='h-fit self-start m-3'>+Add Bookmark</Button>
           </div>
         </div>
       </main>

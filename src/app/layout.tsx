@@ -24,8 +24,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='ko'>
-      <body>
-        <header className='text-2xl px-4 py-2'>Bookmark</header>
+      <body className='font-serif'>
+        <header className='text-xl px-4 py-2'>Rimi&apos;s Bookmark</header>
         <hr />
         <main>{children}</main>
         <hr />

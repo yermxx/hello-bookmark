@@ -1,4 +1,5 @@
-import { CiImport, CiSquareRemove } from 'react-icons/ci';
+import { HiOutlineX } from 'react-icons/hi';
+import { HiMiniArrowDownTray } from 'react-icons/hi2';
 
 export default function ListEditor({ onClose }: { onClose: () => void }) {
   return (
@@ -13,11 +14,18 @@ export default function ListEditor({ onClose }: { onClose: () => void }) {
           <p className='px-1'>이동 시 자동 삭제</p>
         </div>
         <div className='flex gap-2 justify-end'>
-          <button type='submit'>
-            <CiImport />
+          <button
+            type='submit'
+            className='border border-black px-2 rounded-md py-1'
+          >
+            <HiMiniArrowDownTray />
           </button>
-          <button type='reset' onClick={onClose}>
-            <CiSquareRemove />
+          <button
+            type='reset'
+            onClick={onClose}
+            className='border border-black px-2 rounded-md py-1'
+          >
+            <HiOutlineX />
           </button>
         </div>
       </form>

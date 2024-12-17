@@ -1,6 +1,6 @@
 'use client';
 
-import BookmarkEditor from '@/components/common/molecules/BookmarkEditor';
+import ListEditor from '@/components/common/molecules/ListEditor';
 import BookmarkList from '@/components/common/organisms/BookmarkList';
 import Button from '@/components/ui/Button';
 import { useState } from 'react';
@@ -20,10 +20,10 @@ export default function Home() {
                   onClick={() => setIsOpen(true)}
                   className='h-fit self-start m-3'
                 >
-                  +Add Bookmark
+                  +Add another list
                 </Button>
               )}
-              {isOpen && <BookmarkEditor onClose={() => setIsOpen(false)} />}
+              {isOpen && <ListEditor onClose={() => setIsOpen(false)} />}
             </div>
           </div>
         </div>

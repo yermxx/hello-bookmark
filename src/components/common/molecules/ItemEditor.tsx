@@ -1,3 +1,4 @@
+import { CiEraser, CiRedo, CiSaveDown2 } from 'react-icons/ci';
 import { FormEvent } from 'react';
 
 export default function ItemEditor({ onClose }: { onClose: () => void }) {
@@ -28,11 +29,15 @@ export default function ItemEditor({ onClose }: { onClose: () => void }) {
           <input className='border border-gray-400 rounded-md px-2' />
         </div>
         <div className='flex justify-end gap-2'>
-          <button type='button'>Delete</button>
-          <button onClick={onClose} type='reset'>
-            Reset
+          <button type='button'>
+            <CiEraser />
           </button>
-          <button type='submit'>Save</button>
+          <button onClick={onClose} type='reset'>
+            <CiRedo />
+          </button>
+          <button type='submit'>
+            <CiSaveDown2 />
+          </button>
         </div>
       </form>
     </div>

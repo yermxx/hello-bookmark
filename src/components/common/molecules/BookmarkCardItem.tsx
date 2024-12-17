@@ -1,3 +1,4 @@
+import { CiMenuKebab } from 'react-icons/ci';
 import { useState } from 'react';
 import ItemEditor from './ItemEditor';
 
@@ -12,7 +13,9 @@ export default function BookmarkCardItem() {
             <p>title</p>
             <span>description</span>
           </div>
-          <button onClick={() => setIsEditing(!isEdting)}>Edit</button>
+          <button onClick={() => setIsEditing(!isEdting)}>
+            <CiMenuKebab />
+          </button>
         </div>
       )}
       {isEdting && <ItemEditor onClose={() => setIsEditing(!isEdting)} />}

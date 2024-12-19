@@ -1,6 +1,5 @@
 import Nav from '@/components/Nav';
 import type { Metadata } from 'next';
-import { auth } from '@/lib/auth';
 import './globals.css';
 
 // const geistSans = localFont({
@@ -24,9 +23,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
-  console.log(session);
-
   return (
     <html lang='ko'>
       <body className='font-serif'>
@@ -36,7 +32,7 @@ export default async function RootLayout({
         <hr />
         <main>{children}</main>
         <hr />
-        <footer className='mt-2 text-center'>©yrlee</footer>
+        <footer className='mt-2 text-center bottom-0'>©yrlee</footer>
       </body>
     </html>
   );

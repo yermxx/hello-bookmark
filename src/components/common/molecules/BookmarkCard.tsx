@@ -1,3 +1,5 @@
+'use client';
+
 import Button from '@/components/ui/Button';
 import { useEffect, useRef, useState } from 'react';
 import BookmarkCardItem from './BookmarkCardItem';
@@ -18,8 +20,6 @@ export default function BookmarkCard() {
       <p className='text-center font-bold p-2 text-2xl'>Title</p>
       <div className='overflow-y-auto flex-1'>
         <div className='space-y-2 mb-2 '>
-          <BookmarkCardItem />
-          <BookmarkCardItem />
           <BookmarkCardItem />
           <BookmarkCardItem />
           <BookmarkCardItem />

@@ -4,12 +4,33 @@ import {
   HiArrowUturnRight,
   HiMiniArchiveBoxXMark,
 } from 'react-icons/hi2';
-import { FormEvent, useEffect, useRef } from 'react';
+import { FormEvent, useCallback, useEffect, useRef } from 'react';
 
 export default function ItemEditor({ onClose }: { onClose: () => void }) {
   const itemRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+
+  const handleClickOutside = useCallback(
+    (e: MouseEvent) => {
+      if (itemRef.current?.contains(e.target as Node)) {
+        return;
+      }
+      onClose();
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, false);
+    };
+  }, [handleClickOutside]);
 
   useEffect(() => {
     containerRef.current?.scrollIntoView({
@@ -17,26 +38,6 @@ export default function ItemEditor({ onClose }: { onClose: () => void }) {
     });
     inputRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        itemRef.current &&
-        e.target instanceof Node &&
-        !itemRef.current.contains(e.target)
-      ) {
-        onClose();
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [onClose]);
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
 
   return (
     <div ref={itemRef} className='border border-black rounded-lg'>

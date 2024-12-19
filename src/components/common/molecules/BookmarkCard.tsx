@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import BookmarkCardItem from './BookmarkCardItem';
 import ItemEditor from './ItemEditor';
 
-export default function BookmarkCard() {
+export default function BookmarkCard({ title }: { title: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const addRef = useRef<HTMLDivElement>(null);
 
@@ -17,11 +17,9 @@ export default function BookmarkCard() {
 
   return (
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
-      <p className='text-center font-bold p-2 text-2xl'>Title</p>
+      <p className='text-center font-bold p-2 text-2xl'>{title}</p>
       <div className='overflow-y-auto flex-1'>
         <div className='space-y-2 mb-2 '>
-          <BookmarkCardItem />
-          <BookmarkCardItem />
           <BookmarkCardItem />
           <BookmarkCardItem />
           <BookmarkCardItem />

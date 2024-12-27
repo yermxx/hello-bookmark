@@ -4,15 +4,50 @@ import {
   HiArrowUturnRight,
   HiMiniArchiveBoxXMark,
 } from 'react-icons/hi2';
-import { FormEvent, useCallback, useEffect, useRef } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Card } from './BookmarkCard';
 
-export default function ItemEditor({ onClose }: { onClose: () => void }) {
+type Props = {
+  onClose: () => void;
+  onSubmit: (data: Card) => void;
+};
+
+export default function ItemEditor({ onClose, onSubmit }: Props) {
+  const [formData, setFormData] = useState<Card>({
+    url: '',
+    title: '',
+    description: '',
+    image: '',
+  });
   const itemRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    onSubmit(formData);
+    setFormData({
+      url: '',
+      title: '',
+      description: '',
+      image: '',
+    });
+    onClose();
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleClickOutside = useCallback(
@@ -47,24 +82,45 @@ export default function ItemEditor({ onClose }: { onClose: () => void }) {
           <div className='grid grid-cols-4 gap-3'>
             <input
               ref={inputRef}
+              name='url'
+              value={formData.url}
+              onChange={handleChange}
               className='border border-gray-400 rounded-md px-2 col-span-3'
             />
-            <button className='col-span-1 px-4 rounded-lg border border-black mx-2'>
+            <button
+              type='button'
+              className='col-span-1 px-4 rounded-lg border border-black mx-2'
+            >
               <HiArrowUturnRight />
             </button>
           </div>
         </div>
         <div className='flex flex-col mb-4'>
           <label>Title</label>
-          <input className='border border-gray-400 rounded-md px-2' />
+          <input
+            name='title'
+            value={formData.title}
+            onChange={handleChange}
+            className='border border-gray-400 rounded-md px-2'
+          />
         </div>
         <div className='flex flex-col mb-4'>
           <label>Description</label>
-          <input className='border border-gray-400 rounded-md px-2' />
+          <input
+            name='description'
+            value={formData.description}
+            onChange={handleChange}
+            className='border border-gray-400 rounded-md px-2'
+          />
         </div>
         <div className='flex flex-col mb-7'>
           <label>Image URL</label>
-          <input className='border border-gray-400 rounded-md px-2' />
+          <input
+            name='image'
+            value={formData.image}
+            onChange={handleChange}
+            className='border border-gray-400 rounded-md px-2'
+          />
         </div>
         <div className='flex justify-end gap-3.5 mb-1.5'>
           <button
@@ -75,6 +131,7 @@ export default function ItemEditor({ onClose }: { onClose: () => void }) {
           </button>
           <button
             type='submit'
+            onClick={() => console.log('Submit button clicked')}
             className='border border-black px-2 rounded-md py-1'
           >
             <HiMiniArrowDownTray />

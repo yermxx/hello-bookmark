@@ -14,5 +14,17 @@ export const {
   pages: {
     signIn: `/login`,
   },
+  callbacks: {
+    async signIn({ account, profile }) {
+      console.log('account', account);
+      console.log('profile', profile);
+      return true;
+    },
+    async session({ session, user }) {
+      console.log('session', session);
+      console.log('user', user);
+      return session;
+    },
+  },
   trustHost: true,
 });

@@ -4,7 +4,11 @@ import Button from '@/components/ui/Button';
 import { useState } from 'react';
 import ListEditor from './ListEditor';
 
-export default function AddList() {
+export default function AddList({
+  onClick,
+}: {
+  onClick: (newCard: { title: string }) => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -17,7 +21,9 @@ export default function AddList() {
           +Add another list
         </Button>
       )}
-      {isOpen && <ListEditor onClose={() => setIsOpen(false)} />}
+      {isOpen && (
+        <ListEditor onClick={onClick} onClose={() => setIsOpen(false)} />
+      )}
     </>
   );
 }

@@ -5,7 +5,12 @@ import BookmarkCard from './BookmarkCard';
 
 type List = { id: number; text: string };
 
-export default function ListEditor({ onClose }: { onClose: () => void }) {
+type Props = {
+  onClick: (title: { title: string }) => void;
+  onClose: () => void;
+};
+
+export default function ListEditor({ onClick, onClose }: Props) {
   const [lists, setLists] = useState<List[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -19,6 +24,8 @@ export default function ListEditor({ onClose }: { onClose: () => void }) {
     if (!data) return alert('내용을 입력해주세요!');
     setLists([{ id: Date.now(), text: data }]);
     inputRef.current.value = '';
+    onClick({ title: data });
+    onClose();
   };
 
   return (

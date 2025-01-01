@@ -37,16 +37,19 @@ export default function BookmarkCard({ title }: { title: string }) {
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
       <p className='text-center font-bold p-4 text-2xl'>{title}</p>
       <div className='overflow-y-auto flex-1'>
-        <div className='space-y-2 mb-2 '>
-          {items.map((item) => (
-            <BookmarkCardItem
-              key={item.id}
-              url={item.url}
-              title={item.title}
-              description={item.description}
-              image={item.image}
-            />
-          ))}
+        <div>
+          <ul className='space-y-3.5'>
+            {items.map((item) => (
+              <li key={item.id}>
+                <BookmarkCardItem
+                  url={item.url}
+                  title={item.title}
+                  description={item.description}
+                  image={item.image}
+                />
+              </li>
+            ))}
+          </ul>
           {isOpen && (
             <div ref={addRef}>
               <ItemEditor

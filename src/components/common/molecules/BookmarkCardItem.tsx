@@ -17,18 +17,25 @@ export default function BookmarkCardItem({
       {!isEdting && (
         <div className='border border-gray-400 rounded-lg p-4 flex justify-between items-center gap-3 m-2'>
           <div className='shrink-0'>
-            <Image src={image} alt={title} width={40} height={40} />
+            <Image
+              src={image}
+              alt={title}
+              width={0}
+              height={0}
+              sizes='100%'
+              className='w-16 h-16 object-contain'
+            />
           </div>
           <div className='w-44'>
             <a
               href={url}
               target='_blank'
               rel='noopener noreferrer'
-              className='font-semibold'
+              className='font-semibold overflow-hidden whitespace-nowrap mb-0.5 text-ellipsis block w-full'
             >
               {title}
             </a>
-            <p className='overflow-hidden whitespace-nowrap text-ellipsis text-gray-400'>
+            <p className='overflow-hidden text-sm whitespace-nowrap text-ellipsis text-gray-400'>
               {description}
             </p>
           </div>

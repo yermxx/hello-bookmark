@@ -26,7 +26,7 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
     description: '',
     image: '',
   });
-  const itemRef = useRef<HTMLDivElement>(null);
+  const itemRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -83,7 +83,7 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener('click', handleClickOutside, false);
     return () => {
       document.removeEventListener('click', handleClickOutside, false);
     };
@@ -97,77 +97,78 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
   }, []);
 
   return (
-    <div ref={itemRef} className='border border-black rounded-lg'>
-      <form onSubmit={handleSubmit} className='p-4'>
-        <div ref={containerRef} className='flex flex-col mb-4'>
-          <label>URL</label>
-          <div className='grid grid-cols-4 gap-3'>
-            <input
-              ref={inputRef}
-              name='url'
-              value={formData.url}
-              onChange={handleChange}
-              className='border border-gray-400 rounded-md px-2 col-span-3'
-            />
-            <button
-              onClick={handleClick}
-              type='button'
-              className='col-span-1 px-4 rounded-lg border border-black mx-2'
-            >
-              <HiArrowUturnRight />
-            </button>
-          </div>
-        </div>
-        <div className='flex flex-col mb-4'>
-          <label>Title</label>
+    <form
+      ref={itemRef}
+      onSubmit={handleSubmit}
+      className='border border-black rounded-lg p-4'
+    >
+      <div ref={containerRef} className='flex flex-col mb-4'>
+        <label>URL</label>
+        <div className='grid grid-cols-4 gap-3'>
           <input
-            name='title'
-            value={formData.title}
+            ref={inputRef}
+            name='url'
+            value={formData.url}
             onChange={handleChange}
-            className='border border-gray-400 rounded-md px-2'
+            className='border border-gray-400 rounded-md px-2 col-span-3'
           />
-        </div>
-        <div className='flex flex-col mb-4'>
-          <label>Description</label>
-          <input
-            name='description'
-            value={formData.description}
-            onChange={handleChange}
-            className='border border-gray-400 rounded-md px-2'
-          />
-        </div>
-        <div className='flex flex-col mb-7'>
-          <label>Image URL</label>
-          <input
-            name='image'
-            value={formData.image}
-            onChange={handleChange}
-            className='border border-gray-400 rounded-md px-2'
-          />
-        </div>
-        <div className='flex justify-end gap-3.5 mb-1.5'>
           <button
+            onClick={handleClick}
             type='button'
-            className='border border-black px-2 rounded-md py-1'
+            className='col-span-1 px-4 rounded-lg border border-black mx-2'
           >
-            <HiMiniArchiveBoxXMark />
-          </button>
-          <button
-            type='submit'
-            onClick={() => console.log('Submit button clicked')}
-            className='border border-black px-2 rounded-md py-1'
-          >
-            <HiMiniArrowDownTray />
-          </button>
-          <button
-            onClick={onClose}
-            type='reset'
-            className='border border-black px-2 rounded-md py-1'
-          >
-            <HiOutlineX />
+            <HiArrowUturnRight />
           </button>
         </div>
-      </form>
-    </div>
+      </div>
+      <div className='flex flex-col mb-4'>
+        <label>Title</label>
+        <input
+          name='title'
+          value={formData.title}
+          onChange={handleChange}
+          className='border border-gray-400 rounded-md px-2'
+        />
+      </div>
+      <div className='flex flex-col mb-4'>
+        <label>Description</label>
+        <input
+          name='description'
+          value={formData.description}
+          onChange={handleChange}
+          className='border border-gray-400 rounded-md px-2'
+        />
+      </div>
+      <div className='flex flex-col mb-7'>
+        <label>Image URL</label>
+        <input
+          name='image'
+          value={formData.image}
+          onChange={handleChange}
+          className='border border-gray-400 rounded-md px-2'
+        />
+      </div>
+      <div className='flex justify-end gap-3.5 mb-1.5'>
+        <button
+          type='button'
+          className='border border-black px-2 rounded-md py-1'
+        >
+          <HiMiniArchiveBoxXMark />
+        </button>
+        <button
+          type='submit'
+          className='border border-black px-2 rounded-md py-1'
+        >
+          <HiMiniArrowDownTray />
+        </button>
+        <button
+          onClick={onClose}
+          type='reset'
+          className='border border-black px-2 rounded-md py-1'
+        >
+          <HiOutlineX />
+        </button>
+      </div>
+    </form>
   );
 }

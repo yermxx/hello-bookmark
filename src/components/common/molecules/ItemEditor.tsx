@@ -60,6 +60,28 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
     [onClose]
   );
 
+  const fetchMetadata = async (url: string) => {
+    const response = await fetch('/api/og', {
+      method: 'POST',
+      body: JSON.stringify({ url }),
+    });
+    const data = await response.json();
+    return data;
+  };
+
+  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!formData.url) return;
+    const metaData = await fetchMetadata(formData.url);
+
+    setFormData((prev) => ({
+      ...prev,
+      title: metaData.ogTitle || '',
+      description: metaData.ogDescription || '',
+      image: metaData.ogImage?.[0]?.url || '',
+    }));
+  };
+
   useEffect(() => {
     document.addEventListener('click', handleClickOutside, true);
     return () => {
@@ -88,6 +110,7 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
               className='border border-gray-400 rounded-md px-2 col-span-3'
             />
             <button
+              onClick={handleClick}
               type='button'
               className='col-span-1 px-4 rounded-lg border border-black mx-2'
             >

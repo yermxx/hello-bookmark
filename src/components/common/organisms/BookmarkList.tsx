@@ -5,7 +5,6 @@ import AddList from '../molecules/AddList';
 import BookmarkCard from '../molecules/BookmarkCard';
 
 type Title = { title: string };
-
 type Card = { id: number } & Title;
 
 export default function BookmarkList() {
@@ -21,18 +20,14 @@ export default function BookmarkList() {
 
   return (
     <>
-      <div className='flex gap-3 p-3'>
-        <ul>
-          {cards.map((card) => (
-            <li key={card.id}>
-              <BookmarkCard title={card.title} />
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <AddList onClick={handleAddCard} />
-      </div>
+      <ul className='flex gap-3 p-3'>
+        {cards.map((card) => (
+          <li key={card.id}>
+            <BookmarkCard title={card.title} />
+          </li>
+        ))}
+      </ul>
+      <AddList onClick={handleAddCard} />
     </>
   );
 }

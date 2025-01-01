@@ -35,7 +35,7 @@ export default function BookmarkCard({ title }: { title: string }) {
 
   return (
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
-      <p className='text-center font-bold p-2 text-2xl'>{title}</p>
+      <p className='text-center font-bold p-4 text-2xl'>{title}</p>
       <div className='overflow-y-auto flex-1'>
         <div className='space-y-2 mb-2 '>
           {items.map((item) => (
@@ -58,7 +58,7 @@ export default function BookmarkCard({ title }: { title: string }) {
         </div>
       </div>
       {!isOpen && (
-        <Button onClick={() => setIsOpen(true)} className='ml-auto mt-2'>
+        <Button onClick={() => setIsOpen(true)} className='ml-auto mx-2 mb-2'>
           +Add item
         </Button>
       )}

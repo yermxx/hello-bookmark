@@ -33,6 +33,16 @@ export default function BookmarkCard({ title }: { title: string }) {
     setItems((prev) => [...prev, data]);
   };
 
+  const handleDeleteItem = (id: number) => {
+    setItems(items.filter((item) => item.id !== id));
+  };
+
+  const handleEditItem = (id: number, updateData: Card) => {
+    setItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...updateData, id } : item))
+    );
+  };
+
   return (
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
       <p className='text-center font-bold p-4 text-2xl'>{title}</p>
@@ -42,10 +52,13 @@ export default function BookmarkCard({ title }: { title: string }) {
             {items.map((item) => (
               <li key={item.id}>
                 <BookmarkCardItem
+                  id={item.id}
                   url={item.url}
                   title={item.title}
                   description={item.description}
                   image={item.image}
+                  onEdited={handleEditItem}
+                  onDelete={handleDeleteItem}
                 />
               </li>
             ))}
@@ -55,6 +68,8 @@ export default function BookmarkCard({ title }: { title: string }) {
               <ItemEditor
                 onSubmit={handleAddItem}
                 onClose={() => setIsOpen(false)}
+                onDelete={handleDeleteItem}
+                onEdited={handleEditItem}
               />
             </div>
           )}

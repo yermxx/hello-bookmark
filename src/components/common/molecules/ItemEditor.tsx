@@ -12,19 +12,29 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Card } from './BookmarkCard';
+import { Card, Item } from './BookmarkCard';
 
 type Props = {
   onClose: () => void;
   onSubmit: (data: Card) => void;
+  onDelete?: (id: number) => void;
+  onEdited: (id: number, updateData: Card) => void;
+  itemId?: number;
+  initialData?: Item;
 };
 
-export default function ItemEditor({ onClose, onSubmit }: Props) {
+export default function ItemEditor({
+  onClose,
+  onSubmit,
+  onDelete,
+  onEdited,
+  initialData,
+}: Props) {
   const [formData, setFormData] = useState<Card>({
-    url: '',
-    title: '',
-    description: '',
-    image: '',
+    url: initialData?.url || '',
+    title: initialData?.title || '',
+    description: initialData?.description || '',
+    image: initialData?.image || '',
   });
   const itemRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,13 +42,11 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({
-      url: '',
-      title: '',
-      description: '',
-      image: '',
-    });
+    if (initialData) {
+      onEdited(initialData.id, formData);
+    } else {
+      onSubmit(formData);
+    }
     onClose();
   };
 
@@ -59,6 +67,20 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
     },
     [onClose]
   );
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, false);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, false);
+    };
+  }, [handleClickOutside]);
+
+  useEffect(() => {
+    containerRef.current?.scrollIntoView({
+      behavior: 'smooth',
+    });
+    inputRef.current?.focus();
+  }, []);
 
   const fetchMetadata = async (url: string) => {
     const response = await fetch('/api/og', {
@@ -81,20 +103,6 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
       image: metaData.ogImage?.[0]?.url || '',
     }));
   };
-
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside, false);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, false);
-    };
-  }, [handleClickOutside]);
-
-  useEffect(() => {
-    containerRef.current?.scrollIntoView({
-      behavior: 'smooth',
-    });
-    inputRef.current?.focus();
-  }, []);
 
   return (
     <form
@@ -151,6 +159,13 @@ export default function ItemEditor({ onClose, onSubmit }: Props) {
       <div className='flex justify-end gap-3.5 mb-1.5'>
         <button
           type='button'
+          onClick={() => {
+            if (initialData?.id && onDelete) {
+              if (confirm('정말 삭제하시겠습니까?')) {
+                onDelete(initialData.id);
+              }
+            }
+          }}
           className='border border-black px-2 rounded-md py-1'
         >
           <HiMiniArchiveBoxXMark />

@@ -4,12 +4,25 @@ import { useState } from 'react';
 import { Card } from './BookmarkCard';
 import ItemEditor from './ItemEditor';
 
+type Props = {
+  id: number;
+  url: string;
+  title: string;
+  description: string;
+  image: string;
+  onEdited: (id: number, updateData: Card) => void;
+  onDelete: (id: number) => void;
+};
+
 export default function BookmarkCardItem({
+  id,
   url,
   title,
   description,
   image,
-}: Card) {
+  onEdited,
+  onDelete,
+}: Props) {
   const [isEdting, setIsEditing] = useState(false);
 
   return (
@@ -33,7 +46,7 @@ export default function BookmarkCardItem({
               rel='noopener noreferrer'
               className='font-semibold overflow-hidden whitespace-nowrap mb-0.5 text-ellipsis block w-full'
             >
-              {title}
+              <span className='inline-block w-fit bg-rose-100 '>{title}</span>
             </a>
             <p className='overflow-hidden text-sm whitespace-nowrap text-ellipsis text-gray-400'>
               {description}
@@ -48,11 +61,14 @@ export default function BookmarkCardItem({
       )}
       {isEdting && (
         <ItemEditor
+          initialData={{ id, url, title, description, image }}
           onSubmit={(data) => {
             console.log(data);
             setIsEditing(false);
           }}
           onClose={() => setIsEditing(false)}
+          onEdited={onEdited}
+          onDelete={() => onDelete(id)}
         />
       )}
     </>

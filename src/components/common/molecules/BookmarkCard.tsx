@@ -14,10 +14,23 @@ export type Card = {
 
 export type Item = { id: number } & Card;
 
-export default function BookmarkCard({ title }: { title: string }) {
-  const [items, setItems] = useState<Item[]>([]);
+export default function BookmarkCard({
+  title,
+  storageKey,
+}: {
+  title: string;
+  storageKey: string;
+}) {
+  const [items, setItems] = useState<Item[]>(() => {
+    const savedItems = localStorage.getItem(`bookmarkItems_${storageKey}`);
+    return savedItems ? JSON.parse(savedItems) : [];
+  });
   const [isOpen, setIsOpen] = useState(false);
   const addRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    localStorage.setItem(`bookmarkItems_${storageKey}`, JSON.stringify(items));
+  }, [items, storageKey]);
 
   useEffect(() => {
     if (isOpen) {

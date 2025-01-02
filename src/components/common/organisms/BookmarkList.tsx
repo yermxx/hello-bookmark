@@ -1,5 +1,6 @@
 'use client';
 
+import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
 import AddList from '../molecules/AddList';
 import BookmarkCard from '../molecules/BookmarkCard';
@@ -23,7 +24,7 @@ export default function BookmarkList() {
       <ul className='flex gap-3 p-3'>
         {cards.map((card) => (
           <li key={card.id}>
-            <BookmarkCard title={card.title} />
+            <BookmarkCard title={card.title} storageKey={uuidv4()} />
           </li>
         ))}
       </ul>

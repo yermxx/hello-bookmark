@@ -1,14 +1,17 @@
 'use client';
 
 import Button from '@/components/ui/Button';
+import { TbRun } from 'react-icons/tb';
 import { useState } from 'react';
+import { List } from '../organisms/BookmarkList';
 import ListEditor from './ListEditor';
 
-export default function AddList({
-  onClick,
-}: {
+type Props = {
   onClick: (newCard: { title: string }) => void;
-}) {
+  lists: List[];
+};
+
+export default function AddList({ onClick, lists }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -16,9 +19,9 @@ export default function AddList({
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className='h-fit self-start m-3'
+          className='flex items-center justify-center juh-fit self-start m-3'
         >
-          +Add another list
+          {lists?.length === 0 ? '+Add List' : '+Add another list..'} <TbRun />
         </Button>
       )}
       {isOpen && (

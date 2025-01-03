@@ -19,7 +19,7 @@ export default function AddList({ onClick, lists }: Props) {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className='flex items-center justify-center juh-fit self-start m-3'
+          className='flex items-center justify-center self-start m-3'
         >
           {lists?.length === 0 ? '+Add List' : '+Add another list..'} <TbRun />
         </Button>

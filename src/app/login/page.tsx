@@ -1,16 +1,23 @@
 import { BiLogoGoogle } from 'react-icons/bi';
 import { auth, signIn } from '@/lib/auth';
+import { query } from '@/lib/db';
 import EmailLoginForm from './EmailLoginForm';
 import GithubLogin from './github-login';
 import KakaoLogin from './kakao-login';
 import NaverLogin from './naver-login';
+
+type User = {
+  id: number;
+  nickname: string;
+  email: string;
+};
 
 export default async function LoginPage() {
   const session = await auth();
   console.log('🚀 login - session:', session);
 
   // query('select * from User where id = ? name = ?', [1, 'hong']);
-  // const users = await query<User>('select * from User');
+  const users = await query<User>('select * from User');
 
   const googleLogin = async (formData: FormData) => {
     'use server';
@@ -27,6 +34,11 @@ export default async function LoginPage() {
     <div className='flex justify-center h-full w-screen'>
       <div className='flex flex-col w-2/5 item-center justify-center p-16'>
         <h1 className='text-2xl font-bold text-center p-4 mb-5'>Sign In</h1>
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>{user.nickname}</li>
+          ))}
+        </ul>
         <EmailLoginForm />
 
         <div className='border border-gray-600 p-4 rounded-lg mb-5 shadow-md'>

@@ -1,4 +1,6 @@
 import { BsBookmarkHeart } from 'react-icons/bs';
+import { HiOutlineSparkles } from 'react-icons/hi';
+import { LiaExternalLinkAltSolid } from 'react-icons/lia';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 
@@ -21,23 +23,24 @@ export default async function Nav() {
 
       <div className='flex gap-3 m-3'>
         <Link href='https://github.com/yermxx/bookmark'>
-          <button className='px-2.5 py-1 border rounded-full border-black hover:border-gray-500 hover:text-gray-500'>
-            Github Repo.
+          <button className='flex items-center justify-center px-2.5 py-1 border rounded-full border-black hover:border-gray-500 hover:text-gray-500'>
+            Github Repo <LiaExternalLinkAltSolid />
           </button>
         </Link>
         {didLogin ? (
           <Link
             href='/api/auth/signout'
-            className='bg-black text-white px-2.5 py-1 rounded-full hover:bg-gray-800'
+            className='flex items-center justify-center bg-black text-white px-2.5 py-1 rounded-full hover:bg-gray-800'
           >
             Hello! {session.user?.name}
+            <HiOutlineSparkles />
           </Link>
         ) : (
           <Link
             href='/api/auth/signin'
-            className='px-2.5 py-1 border rounded-full border-black hover:border-gray-400 hover:text-gray-400'
+            className='flex items-center justify-center px-2.5 py-1 border rounded-full border-black hover:border-gray-400 hover:text-gray-400'
           >
-            Sign In
+            Sign In <LiaExternalLinkAltSolid />
           </Link>
         )}
         {/* <Image

@@ -1,16 +1,13 @@
-import Button from '@/components/ui/Button';
+import { BiLogoGoogle } from 'react-icons/bi';
 import { auth, signIn } from '@/lib/auth';
-import GithubLogin from './github-Login';
+import EmailLoginForm from './EmailLoginForm';
+import GithubLogin from './github-login';
 import KakaoLogin from './kakao-login';
-
-// type User = {
-//   id: number;
-//   nickname: string;
-// };
+import NaverLogin from './naver-login';
 
 export default async function LoginPage() {
   const session = await auth();
-  console.log(session);
+  console.log('🚀 login - session:', session);
 
   // query('select * from User where id = ? name = ?', [1, 'hong']);
   // const users = await query<User>('select * from User');
@@ -27,22 +24,29 @@ export default async function LoginPage() {
   };
 
   return (
-    <>
-      {/* <Login signin={signIn} /> */}
-      <h1>Login</h1>
-      {/* <ul>
-        {users.map((user) => {
-          <li key={user.id}>{user.nickname}</li>;
-        })}
-      </ul> */}
-      <form action={googleLogin}>
-        <input type='hidden' name='service' value='google' />
-        <div className='flex gap-3'>
-          <Button>Sign In with Google</Button>
-          <GithubLogin githubLogin={githubLogin} />
-          <KakaoLogin />
+    <div className='flex justify-center h-full w-screen'>
+      <div className='flex flex-col w-2/5 item-center justify-center p-16'>
+        <h1 className='text-2xl font-bold text-center p-4 mb-5'>Sign In</h1>
+        <EmailLoginForm />
+
+        <div className='border border-gray-600 p-4 rounded-lg mb-5 shadow-md'>
+          <h1 className='text-center text-lg mb-4'>Or continue with...*</h1>
+          <div className='flex justify-around mx-auto'>
+            <form action={googleLogin}>
+              <input type='hidden' name='service' value='google' />
+              <button
+                type='submit'
+                className='border px-6 py-2 rounded-md border-gray-500 hover:bg-zinc-100'
+              >
+                <BiLogoGoogle />
+              </button>
+            </form>
+            <GithubLogin githubLogin={githubLogin} />
+            <NaverLogin />
+            <KakaoLogin />
+          </div>
         </div>
-      </form>
-    </>
+      </div>
+    </div>
   );
 }

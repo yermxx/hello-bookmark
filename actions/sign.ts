@@ -2,6 +2,6 @@
 
 import { signIn } from '@/lib/auth';
 
-export const myLogin = async (service: string) => {
+export const login = async (service: string) => {
   await signIn(service);
 };

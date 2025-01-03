@@ -7,8 +7,8 @@ import { auth } from '@/lib/auth';
 
 export default async function Nav() {
   const session = await auth();
-  const didLogin = !!session?.user;
-  console.log(session);
+  const didLogin = !!session?.user?.email;
+  console.log('🚀 Nav - session:', session);
 
   return (
     <div className='flex items-center justify-between'>

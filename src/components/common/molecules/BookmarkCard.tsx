@@ -1,7 +1,9 @@
 'use client';
 
 import Button from '@/components/ui/Button';
+import { LuDelete } from 'react-icons/lu';
 import { useEffect, useRef, useState } from 'react';
+import { List } from '../organisms/BookmarkList';
 import BookmarkCardItem from './BookmarkCardItem';
 import ItemEditor from './ItemEditor';
 
@@ -14,23 +16,25 @@ export type Card = {
 
 export type Item = { id: number } & Card;
 
-export default function BookmarkCard({
-  title,
-  storageKey,
-}: {
+type Props = {
   title: string;
-  storageKey: string;
-}) {
+  cardData: List;
+  onDelete: (cardId: number) => void;
+};
+
+export default function BookmarkCard({ title, cardData, onDelete }: Props) {
   const [items, setItems] = useState<Item[]>(() => {
-    const savedItems = localStorage.getItem(`bookmarkItems_${storageKey}`);
+    const savedItems = localStorage.getItem(`bookmarkCard_${title}`);
     return savedItems ? JSON.parse(savedItems) : [];
   });
   const [isOpen, setIsOpen] = useState(false);
   const addRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    localStorage.setItem(`bookmarkItems_${storageKey}`, JSON.stringify(items));
-  }, [items, storageKey]);
+    if (title) {
+      localStorage.setItem(`bookmarkCard_${title}`, JSON.stringify(items));
+    }
+  }, [items, title]);
 
   useEffect(() => {
     if (isOpen) {
@@ -48,6 +52,7 @@ export default function BookmarkCard({
 
   const handleDeleteItem = (id: number) => {
     setItems(items.filter((item) => item.id !== id));
+    localStorage.removeItem(`bookmarkCard_${title}`);
   };
 
   const handleEditItem = (id: number, updateData: Card) => {
@@ -58,7 +63,22 @@ export default function BookmarkCard({
 
   return (
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
-      <p className='text-center font-bold p-4 text-2xl'>{title}</p>
+      <div className='grid grid-cols-3 items-center'>
+        <p className='font-bold p-4 text-2xl col-span-2 text-right'>{title}</p>
+        <div className='flex col-span-1 justify-end p-4 gap-3'>
+          <button
+            type='button'
+            onClick={() => {
+              if (confirm('정말 카드를 삭제하시겠습니까?')) {
+                onDelete(cardData.id);
+                localStorage.removeItem(`bookmarkCard_${title}`);
+              }
+            }}
+          >
+            <LuDelete />
+          </button>
+        </div>
+      </div>
       <div className='overflow-y-auto flex-1'>
         <div>
           <ul className='space-y-3.5'>
@@ -70,7 +90,7 @@ export default function BookmarkCard({
                   title={item.title}
                   description={item.description}
                   image={item.image}
-                  onEdited={handleEditItem}
+                  onEdit={handleEditItem}
                   onDelete={handleDeleteItem}
                 />
               </li>
@@ -82,7 +102,7 @@ export default function BookmarkCard({
                 onSubmit={handleAddItem}
                 onClose={() => setIsOpen(false)}
                 onDelete={handleDeleteItem}
-                onEdited={handleEditItem}
+                onEdit={handleEditItem}
               />
             </div>
           )}

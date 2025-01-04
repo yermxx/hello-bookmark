@@ -1,6 +1,5 @@
 'use client';
 
-import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
 import AddList from '../molecules/AddList';
 import BookmarkCard from '../molecules/BookmarkCard';
@@ -12,11 +11,15 @@ export default function BookmarkList() {
   const [cards, setCards] = useState<List[]>([]);
 
   const handleAddCard = (newCard: ListTitle) => {
-    const data: List = {
+    const cardData: List = {
       id: Date.now(),
       ...newCard,
     };
-    setCards((prev) => [...prev, data]);
+    setCards((prev) => [...prev, cardData]);
+  };
+
+  const handleDeleteCard = (cardId: number) => {
+    setCards(cards.filter((card) => card.id !== cardId));
   };
 
   return (
@@ -24,7 +27,11 @@ export default function BookmarkList() {
       <ul className='flex gap-3 p-3'>
         {cards.map((card) => (
           <li key={card.id}>
-            <BookmarkCard title={card.title} storageKey={uuidv4()} />
+            <BookmarkCard
+              title={card.title}
+              cardData={card}
+              onDelete={() => handleDeleteCard(card.id)}
+            />
           </li>
         ))}
       </ul>

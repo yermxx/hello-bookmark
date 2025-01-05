@@ -1,9 +1,12 @@
 'use client';
 
 import Button from '@/components/ui/Button';
-import { LuDelete } from 'react-icons/lu';
+import { Popover } from '@/components/ui/Popover/Popover';
+import PopoverContent from '@/components/ui/Popover/PopoverContent';
+import PopoverTrigger from '@/components/ui/Popover/PopoverTrigger';
+import { LuPenLine, LuSettings, LuTrash2 } from 'react-icons/lu';
 import { useEffect, useRef, useState } from 'react';
-import { List } from '../organisms/BookmarkList';
+import { type List } from '../organisms/BookmarkList';
 import BookmarkCardItem from './BookmarkCardItem';
 import ItemEditor from './ItemEditor';
 
@@ -65,18 +68,41 @@ export default function BookmarkCard({ title, cardData, onDelete }: Props) {
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
       <div className='grid grid-cols-3 items-center'>
         <p className='font-bold p-4 text-2xl col-span-2 text-right'>{title}</p>
-        <div className='flex col-span-1 justify-end p-4 gap-3'>
-          <button
-            type='button'
-            onClick={() => {
-              if (confirm('정말 카드를 삭제하시겠습니까?')) {
-                onDelete(cardData.id);
-                localStorage.removeItem(`bookmarkCard_${title}`);
-              }
-            }}
-          >
-            <LuDelete />
-          </button>
+        <div className='flex col-span-1 justify-end p-4'>
+          <Popover>
+            <PopoverTrigger>
+              <button>
+                <LuSettings />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className='border rounded-md px-3 py-2 bg-white' role='menu'>
+                <div
+                  role='menuitem'
+                  tabIndex={0}
+                  className='flex items-center gap-1.5 hover:bg-gray-200 mb-1 px-2 py-1 rounded cursor-pointer'
+                  // onClick={() => {
+                  // }}
+                >
+                  <LuPenLine />
+                  Rename
+                </div>
+                <div
+                  role='menuitem'
+                  tabIndex={0}
+                  onClick={() => {
+                    if (confirm('정말 카드를 삭제하시겠습니까?')) {
+                      onDelete(cardData.id);
+                    }
+                  }}
+                  className='flex items-center gap-1.5 text-red-500 hover:bg-red-100 px-2 py-1 rounded cursor-pointer'
+                >
+                  <LuTrash2 />
+                  Delete
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <div className='overflow-y-auto flex-1'>
@@ -108,6 +134,7 @@ export default function BookmarkCard({ title, cardData, onDelete }: Props) {
           )}
         </div>
       </div>
+
       {!isOpen && (
         <Button onClick={() => setIsOpen(true)} className='ml-auto mx-2 mb-2'>
           +Add item

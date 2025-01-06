@@ -6,9 +6,10 @@ import PopoverContent from '@/components/ui/Popover/PopoverContent';
 import PopoverTrigger from '@/components/ui/Popover/PopoverTrigger';
 import { LuPenLine, LuSettings, LuTrash2 } from 'react-icons/lu';
 import { useEffect, useRef, useState } from 'react';
-import { type List } from '../organisms/BookmarkList';
+import { type ListTitle, type List } from '../organisms/BookmarkList';
 import BookmarkCardItem from './BookmarkCardItem';
 import ItemEditor from './ItemEditor';
+import ListEditor from './ListEditor';
 
 export type Card = {
   url: string;
@@ -22,15 +23,26 @@ export type Item = { id: number } & Card;
 type Props = {
   title: string;
   cardData: List;
-  onDelete: (cardId: number) => void;
+  onClick: (data: ListTitle) => void;
+  onClose: () => void;
+  onDelete: (id: number) => void;
+  onRename: (cardId: number, newTitle: string) => void;
 };
 
-export default function BookmarkCard({ title, cardData, onDelete }: Props) {
+export default function BookmarkCard({
+  title,
+  cardData,
+  onClick,
+  onClose,
+  onDelete,
+  onRename,
+}: Props) {
   const [items, setItems] = useState<Item[]>(() => {
     const savedItems = localStorage.getItem(`bookmarkCard_${title}`);
     return savedItems ? JSON.parse(savedItems) : [];
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const addRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -67,7 +79,9 @@ export default function BookmarkCard({ title, cardData, onDelete }: Props) {
   return (
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
       <div className='grid grid-cols-3 items-center'>
-        <p className='font-bold p-4 text-2xl col-span-2 text-right'>{title}</p>
+        <p className='font-bold p-4 text-2xl col-span-2 text-left px-8'>
+          {title}
+        </p>
         <div className='flex col-span-1 justify-end p-4'>
           <Popover>
             <PopoverTrigger>
@@ -77,22 +91,26 @@ export default function BookmarkCard({ title, cardData, onDelete }: Props) {
             </PopoverTrigger>
             <PopoverContent>
               <div className='border rounded-md px-3 py-2 bg-white' role='menu'>
-                <div
-                  role='menuitem'
-                  tabIndex={0}
-                  className='flex items-center gap-1.5 hover:bg-gray-200 mb-1 px-2 py-1 rounded cursor-pointer'
-                  // onClick={() => {
-                  // }}
-                >
-                  <LuPenLine />
-                  Rename
-                </div>
+                {!isEdit && (
+                  <div
+                    role='menuitem'
+                    tabIndex={0}
+                    className='flex items-center gap-1.5 hover:bg-gray-200 mb-1 px-2 py-1 rounded cursor-pointer'
+                    onClick={() => {
+                      setIsEdit(true);
+                    }}
+                  >
+                    <LuPenLine />
+                    Rename
+                  </div>
+                )}
                 <div
                   role='menuitem'
                   tabIndex={0}
                   onClick={() => {
                     if (confirm('정말 카드를 삭제하시겠습니까?')) {
                       onDelete(cardData.id);
+                      onClose();
                     }
                   }}
                   className='flex items-center gap-1.5 text-red-500 hover:bg-red-100 px-2 py-1 rounded cursor-pointer'
@@ -107,6 +125,18 @@ export default function BookmarkCard({ title, cardData, onDelete }: Props) {
       </div>
       <div className='overflow-y-auto flex-1'>
         <div>
+          <div className='flex justify-center'>
+            {isEdit && (
+              <ListEditor
+                title={cardData.title}
+                cardData={cardData}
+                onClick={onClick}
+                onClose={() => setIsEdit(false)}
+                onDelete={onDelete}
+                onRename={onRename}
+              />
+            )}
+          </div>
           <ul className='space-y-3.5'>
             {items.map((item) => (
               <li key={item.id}>
@@ -134,7 +164,6 @@ export default function BookmarkCard({ title, cardData, onDelete }: Props) {
           )}
         </div>
       </div>
-
       {!isOpen && (
         <Button onClick={() => setIsOpen(true)} className='ml-auto mx-2 mb-2'>
           +Add item

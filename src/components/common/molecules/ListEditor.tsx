@@ -1,17 +1,30 @@
 import { HiOutlineX } from 'react-icons/hi';
 import { HiMiniArrowDownTray } from 'react-icons/hi2';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import { type ListTitle } from '../organisms/BookmarkList';
 import BookmarkCard from './BookmarkCard';
 
-type List = { id: number; text: string };
+type List = { id: number; title: string };
 
 type Props = {
-  onClick: (title: { title: string }) => void;
+  title: string;
+  cardData: List;
+  onClick: (data: ListTitle) => void;
   onClose: () => void;
+  onDelete: (id: number) => void;
+  onRename: (cardId: number, newTitle: string) => void;
 };
 
-export default function ListEditor({ onClick, onClose }: Props) {
+export default function ListEditor({
+  title,
+  cardData,
+  onClick,
+  onClose,
+  onDelete,
+  onRename,
+}: Props) {
   const [lists, setLists] = useState<List[]>([]);
+  const [name, setName] = useState(title || '');
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -20,12 +33,22 @@ export default function ListEditor({ onClick, onClose }: Props) {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = inputRef.current?.value;
-    if (!data) return alert('내용을 입력해주세요!');
-    setLists([{ id: Date.now(), text: data }]);
-    inputRef.current.value = '';
-    onClick({ title: data });
-    onClose();
+    if (cardData) {
+      if (!name) return alert('내용을 입력해주세요!');
+      onRename(cardData.id, name);
+      onClose();
+    } else {
+      const data = inputRef.current?.value;
+      if (!data) return alert('내용을 입력해주세요!');
+      setLists([{ id: Date.now(), title: data }]);
+      inputRef.current.value = '';
+      onClick({ title: data });
+      onClose();
+    }
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
   };
 
   return (
@@ -35,6 +58,9 @@ export default function ListEditor({ onClick, onClose }: Props) {
           <label>List Name :</label>
           <input
             ref={inputRef}
+            name='title'
+            value={name}
+            onChange={handleChange}
             className='mb-2 border border-gray-400 rounded-md px-2'
           />
         </div>
@@ -61,7 +87,14 @@ export default function ListEditor({ onClick, onClose }: Props) {
       {lists.map((list) => {
         return (
           <div key={list.id} className='mb-2'>
-            <BookmarkCard title={list.text} />
+            <BookmarkCard
+              title={list.title}
+              cardData={cardData}
+              onClick={onClick}
+              onClose={onClose}
+              onDelete={onDelete}
+              onRename={onRename}
+            />
           </div>
         );
       })}

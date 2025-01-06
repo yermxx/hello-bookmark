@@ -10,7 +10,7 @@ type Props = {
   title: string;
   description: string;
   image: string;
-  onEdited: (id: number, updateData: Card) => void;
+  onEdit: (id: number, updateData: Card) => void;
   onDelete: (id: number) => void;
 };
 
@@ -20,14 +20,14 @@ export default function BookmarkCardItem({
   title,
   description,
   image,
-  onEdited,
+  onEdit: onEdit,
   onDelete,
 }: Props) {
-  const [isEdting, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <>
-      {!isEdting && (
+      {!isEditing && (
         <div className='border border-gray-400 rounded-lg p-4 flex justify-between items-center gap-3 m-2'>
           <div className='shrink-0'>
             <Image
@@ -53,13 +53,13 @@ export default function BookmarkCardItem({
             </p>
           </div>
           <div className='flex items-start justify-center self-start'>
-            <button onClick={() => setIsEditing(!isEdting)}>
+            <button onClick={() => setIsEditing(!isEditing)}>
               <CiMenuKebab />
             </button>
           </div>
         </div>
       )}
-      {isEdting && (
+      {isEditing && (
         <ItemEditor
           initialData={{ id, url, title, description, image }}
           onSubmit={(data) => {
@@ -67,7 +67,7 @@ export default function BookmarkCardItem({
             setIsEditing(false);
           }}
           onClose={() => setIsEditing(false)}
-          onEdited={onEdited}
+          onEdit={onEdit}
           onDelete={() => onDelete(id)}
         />
       )}

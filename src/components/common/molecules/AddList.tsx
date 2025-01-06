@@ -3,15 +3,27 @@
 import Button from '@/components/ui/Button';
 import { TbRun } from 'react-icons/tb';
 import { useState } from 'react';
-import { List } from '../organisms/BookmarkList';
+import { type List, type ListTitle } from '../organisms/BookmarkList';
 import ListEditor from './ListEditor';
 
 type Props = {
-  onClick: (newCard: { title: string }) => void;
+  title: string;
   lists: List[];
+  cardData: List;
+  onClick: (data: ListTitle) => void;
+  onClose?: () => void;
+  onDelete: (id: number) => void;
+  onRename: (cardId: number, newTitle: string) => void;
 };
 
-export default function AddList({ onClick, lists }: Props) {
+export default function AddList({
+  title,
+  lists,
+  cardData,
+  onClick,
+  onDelete,
+  onRename,
+}: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -25,7 +37,14 @@ export default function AddList({ onClick, lists }: Props) {
         </Button>
       )}
       {isOpen && (
-        <ListEditor onClick={onClick} onClose={() => setIsOpen(false)} />
+        <ListEditor
+          title={title}
+          cardData={cardData}
+          onClick={onClick}
+          onClose={() => setIsOpen(false)}
+          onDelete={onDelete}
+          onRename={onRename}
+        />
       )}
     </>
   );

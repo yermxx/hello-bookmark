@@ -18,7 +18,7 @@ type Props = {
   onClose: () => void;
   onSubmit: (data: Card) => void;
   onDelete?: (id: number) => void;
-  onEdited: (id: number, updateData: Card) => void;
+  onEdit: (id: number, updateData: Card) => void;
   itemId?: number;
   initialData?: Item;
 };
@@ -27,7 +27,7 @@ export default function ItemEditor({
   onClose,
   onSubmit,
   onDelete,
-  onEdited,
+  onEdit,
   initialData,
 }: Props) {
   const [formData, setFormData] = useState<Card>({
@@ -43,7 +43,7 @@ export default function ItemEditor({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (initialData) {
-      onEdited(initialData.id, formData);
+      onEdit(initialData.id, formData);
     } else {
       onSubmit(formData);
     }

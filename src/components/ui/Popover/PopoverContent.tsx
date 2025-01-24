@@ -7,8 +7,14 @@ export default function PopoverContent({
 }: {
   children: React.ReactNode;
 }) {
-  const { isOpen, triggerRef, contentRef, position, setPosition } =
+  const { setIsOpen, isOpen, triggerRef, contentRef, position, setPosition } =
     usePopover();
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsOpen(false);
+    }
+  }, [isOpen, setIsOpen]);
 
   // isOpen이 바뀔 때마다 위치 계산
   useEffect(() => {

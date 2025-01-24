@@ -1,3 +1,4 @@
+import { usePopover } from '@/components/ui/Popover/context';
 import { HiOutlineX } from 'react-icons/hi';
 import { HiMiniArrowDownTray } from 'react-icons/hi2';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
@@ -26,6 +27,7 @@ export default function ListEditor({
   const [lists, setLists] = useState<List[]>([]);
   const [name, setName] = useState(title || '');
   const inputRef = useRef<HTMLInputElement>(null);
+  const { setIsOpen } = usePopover();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -36,6 +38,7 @@ export default function ListEditor({
     if (cardData) {
       if (!name) return alert('내용을 입력해주세요!');
       onRename(cardData.id, name);
+      setIsOpen(false);
       onClose();
     } else {
       const data = inputRef.current?.value;
@@ -77,7 +80,9 @@ export default function ListEditor({
           </button>
           <button
             type='reset'
-            onClick={onClose}
+            onClick={() => {
+              onClose();
+            }}
             className='border border-black px-2 rounded-md py-1'
           >
             <HiOutlineX />

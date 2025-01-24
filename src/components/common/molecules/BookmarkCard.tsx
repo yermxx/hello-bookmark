@@ -6,7 +6,7 @@ import PopoverContent from '@/components/ui/Popover/PopoverContent';
 import PopoverTrigger from '@/components/ui/Popover/PopoverTrigger';
 import { LuPenLine, LuSettings, LuTrash2 } from 'react-icons/lu';
 import { useEffect, useRef, useState } from 'react';
-import { type ListTitle, type List } from '../organisms/BookmarkList';
+import { type List } from '../organisms/BookmarkList';
 import BookmarkCardItem from './BookmarkCardItem';
 import ItemEditor from './ItemEditor';
 import ListEditor from './ListEditor';
@@ -23,7 +23,7 @@ export type Item = { id: number } & Card;
 type Props = {
   title: string;
   cardData: List;
-  onClick: (data: ListTitle) => void;
+  onAdd: (newCard: List) => void;
   onClose: () => void;
   onDelete: (id: number) => void;
   onRename: (cardId: number, newTitle: string) => void;
@@ -32,24 +32,15 @@ type Props = {
 export default function BookmarkCard({
   title,
   cardData,
-  onClick,
+  onAdd,
   onClose,
   onDelete,
   onRename,
 }: Props) {
-  const [items, setItems] = useState<Item[]>(() => {
-    const savedItems = localStorage.getItem(`bookmarkCard_${title}`);
-    return savedItems ? JSON.parse(savedItems) : [];
-  });
+  const [items, setItems] = useState<Item[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const addRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (title) {
-      localStorage.setItem(`bookmarkCard_${title}`, JSON.stringify(items));
-    }
-  }, [items, title]);
 
   useEffect(() => {
     if (isOpen) {
@@ -67,7 +58,7 @@ export default function BookmarkCard({
 
   const handleDeleteItem = (id: number) => {
     setItems(items.filter((item) => item.id !== id));
-    localStorage.removeItem(`bookmarkCard_${title}`);
+    // localStorage.removeItem(`bookmarkCard_${title}`);
   };
 
   const handleEditItem = (id: number, updateData: Card) => {
@@ -84,13 +75,25 @@ export default function BookmarkCard({
         </p>
         <div className='flex col-span-1 justify-end p-4'>
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <button>
                 <LuSettings />
               </button>
             </PopoverTrigger>
             <PopoverContent>
               <div className='border rounded-md px-3 py-2 bg-white' role='menu'>
+                <div className='flex justify-center'>
+                  {isEdit && (
+                    <ListEditor
+                      title={cardData.title}
+                      cardData={cardData}
+                      onAdd={onAdd}
+                      onClose={() => setIsEdit(false)}
+                      onDelete={onDelete}
+                      onRename={onRename}
+                    />
+                  )}
+                </div>
                 {!isEdit && (
                   <div
                     role='menuitem'
@@ -125,18 +128,6 @@ export default function BookmarkCard({
       </div>
       <div className='overflow-y-auto flex-1'>
         <div>
-          <div className='flex justify-center'>
-            {isEdit && (
-              <ListEditor
-                title={cardData.title}
-                cardData={cardData}
-                onClick={onClick}
-                onClose={() => setIsEdit(false)}
-                onDelete={onDelete}
-                onRename={onRename}
-              />
-            )}
-          </div>
           <ul className='space-y-3.5'>
             {items.map((item) => (
               <li key={item.id}>

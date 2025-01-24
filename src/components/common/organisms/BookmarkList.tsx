@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddList from '../molecules/AddList';
 import BookmarkCard from '../molecules/BookmarkCard';
 
@@ -23,13 +23,32 @@ export default function BookmarkList({
   const [cards, setCards] = useState<List[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleAddCard = (newCard: ListTitle) => {
-    const cardData: List = {
-      id: Date.now(),
-      ...newCard,
-    };
-    setCards((prev) => [...prev, cardData]);
+  useEffect(() => {
+    fetchCards();
+  }, []);
+
+  const fetchCards = async () => {
+    const response = await fetch('/api/bookmarks');
+    const data = await response.json();
+    setCards(data);
   };
+
+  const addCard = async (newCard: List) => {
+    await fetch('/api/bookmarks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newCard),
+    });
+    fetchCards(); // 새로고침
+  };
+
+  // const handleAddCard = (newCard: ListTitle) => {
+  //   const cardData: List = {
+  //     id: Date.now(),
+  //     ...newCard,
+  //   };
+  //   setCards((prev) => [...prev, cardData]);
+  // };
 
   const handleDeleteCard = (cardId: number) => {
     setCards(cards.filter((card) => card.id !== cardId));
@@ -52,7 +71,7 @@ export default function BookmarkList({
             <BookmarkCard
               title={card.title}
               cardData={card}
-              onClick={handleAddCard}
+              onAdd={addCard}
               onDelete={() => handleDeleteCard(card.id)}
               onRename={handleUpdateTitle}
               onClose={() => setIsOpen(!isOpen)}
@@ -64,7 +83,8 @@ export default function BookmarkList({
         title={title}
         cardData={cardData}
         lists={cards}
-        onClick={handleAddCard}
+        onAdd={addCard}
+        // onClick={handleAddCard}
         onDelete={onDelete}
         onRename={onRename}
       />

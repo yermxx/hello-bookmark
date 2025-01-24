@@ -2,7 +2,6 @@ import { usePopover } from '@/components/ui/Popover/context';
 import { HiOutlineX } from 'react-icons/hi';
 import { HiMiniArrowDownTray } from 'react-icons/hi2';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { type ListTitle } from '../organisms/BookmarkList';
 import BookmarkCard from './BookmarkCard';
 
 type List = { id: number; title: string };
@@ -10,7 +9,7 @@ type List = { id: number; title: string };
 type Props = {
   title: string;
   cardData: List;
-  onClick: (data: ListTitle) => void;
+  onAdd: (newCard: List) => void;
   onClose: () => void;
   onDelete: (id: number) => void;
   onRename: (cardId: number, newTitle: string) => void;
@@ -19,7 +18,7 @@ type Props = {
 export default function ListEditor({
   title,
   cardData,
-  onClick,
+  onAdd,
   onClose,
   onDelete,
   onRename,
@@ -33,20 +32,32 @@ export default function ListEditor({
     inputRef.current?.focus();
   }, []);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (cardData) {
-      if (!name) return alert('내용을 입력해주세요!');
+      if (!name) return alert('북마크 이름을 입력해주세요!');
       onRename(cardData.id, name);
       setIsOpen(false);
       onClose();
     } else {
       const data = inputRef.current?.value;
-      if (!data) return alert('내용을 입력해주세요!');
-      setLists([{ id: Date.now(), title: data }]);
-      inputRef.current.value = '';
-      onClick({ title: data });
-      onClose();
+      if (!data) return alert('북마크 이름을 입력해주세요!');
+
+      try {
+        const response = await fetch('/api/bookmarks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: data }),
+        });
+        const newBookmark = await response.json();
+        setLists([{ id: newBookmark.id, title: data }]);
+        inputRef.current.value = '';
+        onClose();
+      } catch (error) {
+        console.error(error);
+        alert('북마크 추가에 실패했습니다.');
+      }
     }
   };
 
@@ -95,7 +106,7 @@ export default function ListEditor({
             <BookmarkCard
               title={list.title}
               cardData={cardData}
-              onClick={onClick}
+              onAdd={onAdd}
               onClose={onClose}
               onDelete={onDelete}
               onRename={onRename}

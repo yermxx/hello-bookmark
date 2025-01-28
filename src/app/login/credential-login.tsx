@@ -14,17 +14,20 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { z } from '@/lib/i18n-zod';
 
 const FormSchema = z.object({
   email: z.string().email(),
-  passwd: z.string().min(8),
+  password: z.string().min(8),
 });
 
 // z.infer: 일종의 유틸리티 타입
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 export default function CredentialLogin() {
+  const router = useRouter();
+
   // const defaultValues =
   // process.env.NODE_ENV !== 'production'
   //   ? {
@@ -37,7 +40,7 @@ export default function CredentialLogin() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       email: '',
-      passwd: '',
+      password: '',
     },
   });
 
@@ -45,11 +48,15 @@ export default function CredentialLogin() {
     try {
       const result = await signIn('credentials', {
         email: values.email,
-        passwd: values.passwd,
+        password: values.password,
         redirect: false,
       });
       if (result?.error) {
         console.error('로그인 실패', result.error);
+      } else {
+        // Main 페이지로 이동
+        router.push('/');
+        router.refresh();
       }
     } catch (error) {
       console.error('로그인 처리 중 에러:', error);
@@ -72,8 +79,7 @@ export default function CredentialLogin() {
                   <Input
                     {...field}
                     type='email'
-                    placeholder='ex) aaa123@gmail.com
-                '
+                    placeholder='Email address...'
                   />
                 </FormControl>
                 <FormMessage />
@@ -82,17 +88,17 @@ export default function CredentialLogin() {
           />
           <FormFieldInput
             form={form}
-            name='passwd'
-            label='passwd'
-            placeholder='password...'
+            name='password'
+            label='Password'
+            placeholder='Password...'
             type='password'
           />
-          <div className='my-3 text-gray-700'>
-            <Link href=''>Forgot Password?</Link>
+          <div className='my-3 text-gray-600'>
+            <Link href='/'>Forgot Password?</Link>
           </div>
           <button
             type='submit'
-            className='flex ml-auto bg-black text-white rounded-md px-4 py-2 mb-6'
+            className='flex ml-auto bg-black text-white rounded-xl px-12 py-2'
           >
             Sign in
           </button>

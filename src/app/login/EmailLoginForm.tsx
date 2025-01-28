@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PiSignIn } from 'react-icons/pi';
 import { FormEvent, useEffect, useRef } from 'react';
-import { signIn } from '@/lib/auth';
+import { signIn } from '../../lib/auth';
 
 export default function EmailLoginForm() {
   const emailRef = useRef<HTMLInputElement>(null);

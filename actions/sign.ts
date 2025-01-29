@@ -3,5 +3,5 @@
 import { signIn } from '@/lib/auth';
 
 export const login = async (service: string) => {
-  await signIn(service);
+  await signIn(service, { redirectTo: '/' });
 };

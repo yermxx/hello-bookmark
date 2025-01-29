@@ -6,7 +6,7 @@ import PopoverContent from '@/components/ui/Popover/PopoverContent';
 import PopoverTrigger from '@/components/ui/Popover/PopoverTrigger';
 import { LuPenLine, LuSettings, LuTrash2 } from 'react-icons/lu';
 import { useEffect, useRef, useState } from 'react';
-import { type List } from '../organisms/BookmarkList';
+import { type Book, type CreateBookInput } from '../organisms/BookmarkList';
 import BookmarkCardItem from './BookmarkCardItem';
 import ItemEditor from './ItemEditor';
 import ListEditor from './ListEditor';
@@ -22,8 +22,8 @@ export type Item = { id: number } & Card;
 
 type Props = {
   title: string;
-  cardData: List;
-  onAdd: (newCard: List) => void;
+  cardData: Book;
+  onAdd: (newCard: CreateBookInput) => Promise<Book>;
   onClose: () => void;
   onDelete: (id: number) => void;
   onRename: (cardId: number, newTitle: string) => void;
@@ -89,7 +89,6 @@ export default function BookmarkCard({
                       cardData={cardData}
                       onAdd={onAdd}
                       onClose={() => setIsEdit(false)}
-                      onDelete={onDelete}
                       onRename={onRename}
                     />
                   )}
@@ -156,7 +155,11 @@ export default function BookmarkCard({
         </div>
       </div>
       {!isOpen && (
-        <Button onClick={() => setIsOpen(true)} className='ml-auto mx-2 mb-2'>
+        <Button
+          type='button'
+          onClick={() => setIsOpen(true)}
+          className='ml-auto mx-2 mb-2'
+        >
           +Add item
         </Button>
       )}

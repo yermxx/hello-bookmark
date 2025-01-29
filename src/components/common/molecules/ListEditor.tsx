@@ -1,17 +1,17 @@
 import { usePopover } from '@/components/ui/Popover/context';
+import { useSession } from 'next-auth/react';
 import { HiOutlineX } from 'react-icons/hi';
 import { HiMiniArrowDownTray } from 'react-icons/hi2';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import BookmarkCard from './BookmarkCard';
+import { type Book, type CreateBookInput } from '../organisms/BookmarkList';
 
-type List = { id: number; title: string };
+// import BookmarkCard from './BookmarkCard';
 
 type Props = {
-  title: string;
-  cardData: List;
-  onAdd: (newCard: List) => void;
+  title?: string;
+  cardData: Book;
+  onAdd: (newCard: CreateBookInput) => Promise<Book>;
   onClose: () => void;
-  onDelete: (id: number) => void;
   onRename: (cardId: number, newTitle: string) => void;
 };
 
@@ -20,13 +20,12 @@ export default function ListEditor({
   cardData,
   onAdd,
   onClose,
-  onDelete,
   onRename,
 }: Props) {
-  const [lists, setLists] = useState<List[]>([]);
   const [name, setName] = useState(title || '');
   const inputRef = useRef<HTMLInputElement>(null);
   const { setIsOpen } = usePopover();
+  const { data: session } = useSession();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -45,15 +44,20 @@ export default function ListEditor({
       if (!data) return alert('북마크 이름을 입력해주세요!');
 
       try {
-        const response = await fetch('/api/bookmarks', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title: data }),
-        });
-        const newBookmark = await response.json();
-        setLists([{ id: newBookmark.id, title: data }]);
-        inputRef.current.value = '';
-        onClose();
+        if (!session?.user?.id) {
+          throw new Error('사용자 ID가 없습니다.');
+        }
+
+        const newCard: CreateBookInput = {
+          title: data,
+          userId: BigInt(session.user.id),
+        };
+
+        const savedCard = await onAdd(newCard);
+        if (savedCard) {
+          inputRef.current.value = '';
+          onClose();
+        }
       } catch (error) {
         console.error(error);
         alert('북마크 추가에 실패했습니다.');
@@ -100,20 +104,6 @@ export default function ListEditor({
           </button>
         </div>
       </form>
-      {lists.map((list) => {
-        return (
-          <div key={list.id} className='mb-2'>
-            <BookmarkCard
-              title={list.title}
-              cardData={cardData}
-              onAdd={onAdd}
-              onClose={onClose}
-              onDelete={onDelete}
-              onRename={onRename}
-            />
-          </div>
-        );
-      })}
     </div>
   );
 }

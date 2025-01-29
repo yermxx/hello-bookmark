@@ -2,7 +2,7 @@ import { BsBookmarkHeart } from 'react-icons/bs';
 import { HiOutlineSparkles } from 'react-icons/hi';
 import { LiaExternalLinkAltSolid } from 'react-icons/lia';
 import Link from 'next/link';
-import { auth } from '@/lib/auth';
+import { auth } from '../lib/auth';
 
 // import Image from 'next/image';
 // import Tokki from '../public/tokki.jpeg';
@@ -29,7 +29,7 @@ export default async function Nav() {
         </Link>
         {didLogin ? (
           <Link
-            href='/api/auth/signout'
+            href='/signout'
             className='flex items-center justify-center bg-black text-white px-2.5 py-1 rounded-full hover:bg-gray-800'
           >
             Hello! {session.user?.name}
@@ -37,7 +37,7 @@ export default async function Nav() {
           </Link>
         ) : (
           <Link
-            href='/api/auth/signin'
+            href='/login'
             className='flex items-center justify-center px-2.5 py-1 border rounded-full border-black hover:border-gray-400 hover:text-gray-400'
           >
             Sign In <LiaExternalLinkAltSolid />

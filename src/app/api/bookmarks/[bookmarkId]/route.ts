@@ -6,10 +6,10 @@ import { toErrorMessage } from '@/lib/utils';
 // GET : 특정 북마크 조회
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { bookmarkId: string } }
 ) {
   try {
-    const { id } = params;
+    const { bookmarkId } = params;
     const session = await auth();
 
     if (!session?.user) {
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
 
-    if (!id) {
+    if (!bookmarkId) {
       return NextResponse.json({ message: 'Book not found' }, { status: 404 });
     }
 
@@ -41,6 +41,7 @@ export async function GET(
 
     return NextResponse.json(serializedBookmarks);
   } catch (error) {
+    console.error('Get error: ', error);
     return NextResponse.json(
       { message: toErrorMessage(error) },
       { status: 500 }
@@ -54,14 +55,14 @@ export async function PUT(
   {
     params,
   }: {
-    params: { id: string };
+    params: { bookmarkId: string };
   }
 ) {
   try {
-    const { id } = params;
-    const bookmarkId = parseInt(id, 10);
+    const { bookmarkId } = params;
+    const id = parseInt(bookmarkId, 10);
 
-    if (!bookmarkId) {
+    if (!id) {
       return NextResponse.json({ message: 'Book not found' }, { status: 404 });
     }
 
@@ -69,13 +70,13 @@ export async function PUT(
     const { title } = data;
 
     await prisma.book.update({
-      where: { id: bookmarkId },
+      where: { id },
       data: { title },
     });
 
     return NextResponse.json({ success: true, message: 'Bookmark updated' });
   } catch (error) {
-    console.error('put error:', error);
+    console.error('Put error:', error);
     return NextResponse.json(
       { message: toErrorMessage(error) },
       { status: 500 }
@@ -86,19 +87,20 @@ export async function PUT(
 // DELETE : 특정 북마크 삭제
 export async function DELETE(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { bookmarkId: string } }
 ) {
   try {
-    const { id } = params;
-    const bookmarkId = parseInt(id, 10);
+    const { bookmarkId } = params;
+    const id = parseInt(bookmarkId, 10);
 
     await prisma.book.delete({
-      where: { id: bookmarkId },
+      where: { id },
     });
 
     // BigInt 직렬화 문제 해결) 반환값을 JSON으로 직접 보내는 대신, 단순 성공/실패 메시지만 반환!
     return NextResponse.json({ success: true, message: 'Bookmark deleted' });
   } catch (error) {
+    console.error('Delete error: ', error);
     return NextResponse.json(
       { message: toErrorMessage(error) },
       { status: 500 }

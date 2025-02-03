@@ -16,10 +16,20 @@ export const authConfig: NextAuthConfig = {
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID as string,
       clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
+      authorization: {
+        params: {
+          prompt: 'select_account',
+        },
+      },
     }),
     GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID as string,
       clientSecret: process.env.AUTH_GITHUB_SECRET as string,
+      authorization: {
+        params: {
+          prompt: 'select_account',
+        },
+      },
     }),
     NaverProvider({
       clientId: process.env.AUTH_NAVER_ID as string,
@@ -108,14 +118,24 @@ export const authConfig: NextAuthConfig = {
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, account, user }) {
+      console.log('jwt - token', token);
+      console.log('jwt - user', user);
       if (user) {
         token.id = user.id;
         token.email = user.email;
       }
+      if (account) {
+        token.provider = account.provider;
+        token.access_token = account.access_token;
+      }
       return token;
     },
     async session({ session, token }: { session: Session; token?: JWT }) {
+      console.log('session - session', session);
+      session.provider = token?.provider;
+      session.access_token = token?.access_token;
+
       if (session?.user) {
         session.user.id = token?.sub as string;
         session.user.email = token?.email as string;

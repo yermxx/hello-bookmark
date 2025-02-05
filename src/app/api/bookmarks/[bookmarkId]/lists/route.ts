@@ -32,12 +32,7 @@ export async function GET(
       },
     });
 
-    const serializedLists = lists.map((list) => ({
-      ...list,
-      bookId: parseInt(params.bookmarkId),
-    }));
-
-    return NextResponse.json(serializedLists);
+    return NextResponse.json(lists);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -77,7 +72,13 @@ export const POST = async (
         url: data.url,
       },
     });
-    console.log('Existing list:', existingList);
+
+    if (existingList) {
+      return Response.json(
+        { error: '중복된 북마크 리스트가 있습니다.' },
+        { status: 400 }
+      );
+    }
 
     const list = await prisma.mark.create({
       data: {
@@ -89,12 +90,7 @@ export const POST = async (
       },
     });
 
-    const serializedList = {
-      ...list,
-      bookId: Number(list.bookId),
-    };
-
-    return NextResponse.json(serializedList);
+    return NextResponse.json(list);
   } catch (error) {
     console.error('Server error:', error);
     return NextResponse.json(

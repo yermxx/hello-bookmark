@@ -19,12 +19,7 @@ export async function GET(
       },
     });
 
-    const serializedLists = lists.map((list) => ({
-      ...list,
-      bookId: Number(list.bookId), // BigInt를 Number로 변환
-    }));
-
-    return NextResponse.json(serializedLists);
+    return NextResponse.json(lists);
   } catch (error) {
     console.error('Get error: ', error);
     return NextResponse.json(
@@ -34,7 +29,7 @@ export async function GET(
   }
 }
 
-// PUT : 특정 북마크 수정
+// PUT : 특정 북마크 리스트 수정
 export async function PUT(
   req: NextRequest,
   {
@@ -52,11 +47,10 @@ export async function PUT(
     }
 
     const data = await req.json();
-    const { url, title, image, description } = data;
 
     await prisma.mark.update({
       where: { id },
-      data: { url, title, image, description },
+      data: { ...data },
     });
 
     return NextResponse.json({

@@ -152,6 +152,7 @@ export default function BookmarkList({
         {cards.map((card) => (
           <li key={card.id}>
             <BookmarkCard
+              bookmarkId={card.id.toString()}
               title={card.title}
               cardData={card}
               onAdd={addCard}

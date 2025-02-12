@@ -12,6 +12,7 @@ type Props = {
   image: string;
   onEdit: (id: number, updateData: Card) => void;
   onDelete: (id: number) => void;
+  highlight: string;
 };
 
 export default function BookmarkCardItem({
@@ -22,6 +23,7 @@ export default function BookmarkCardItem({
   image,
   onEdit: onEdit,
   onDelete,
+  highlight,
 }: Props) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -46,7 +48,7 @@ export default function BookmarkCardItem({
               rel='noopener noreferrer'
               className='font-semibold overflow-hidden whitespace-nowrap mb-0.5 text-ellipsis block w-full'
             >
-              <span className='inline-block w-fit bg-rose-100 '>{title}</span>
+              <span className={`inline-block w-fit ${highlight}`}>{title}</span>
             </a>
             <p className='overflow-hidden text-sm whitespace-nowrap text-ellipsis text-gray-400'>
               {description}
@@ -61,7 +63,7 @@ export default function BookmarkCardItem({
       )}
       {isEditing && (
         <ItemEditor
-          initialData={{ id, url, title, description, image }}
+          initialData={{ id, url, title, description, image, highlight }}
           onSubmit={(data) => {
             console.log(data);
             setIsEditing(false);

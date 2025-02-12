@@ -82,6 +82,7 @@ export const POST = async (
 
     const list = await prisma.mark.create({
       data: {
+        highlight: data.highlight,
         bookId: parseInt(params.bookmarkId),
         url: data.url,
         title: data.title,

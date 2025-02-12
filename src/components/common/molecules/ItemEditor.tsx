@@ -1,3 +1,4 @@
+import Highlight from '@/components/ui/Highlight';
 import { HiOutlineX } from 'react-icons/hi';
 import {
   HiMiniArrowDownTray,
@@ -12,7 +13,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Card, Item } from './BookmarkCard';
+import { type Card, type Item } from './BookmarkCard';
 
 type Props = {
   onClose: () => void;
@@ -31,6 +32,7 @@ export default function ItemEditor({
   initialData,
 }: Props) {
   const [formData, setFormData] = useState<Card>({
+    highlight: initialData?.highlight || 'bg-pink-200',
     url: initialData?.url || '',
     title: initialData?.title || '',
     description: initialData?.description || '',
@@ -43,7 +45,7 @@ export default function ItemEditor({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (initialData) {
-      onEdit(initialData.id, formData);
+      onEdit(initialData.id, { ...formData });
     } else {
       onSubmit(formData);
     }
@@ -111,6 +113,12 @@ export default function ItemEditor({
       className='border border-black rounded-lg p-4'
     >
       <div ref={containerRef} className='flex flex-col mb-4'>
+        <Highlight
+          highlight={formData.highlight}
+          onChange={(newColor) =>
+            setFormData({ ...formData, highlight: newColor })
+          }
+        />
         <label>URL</label>
         <div className='grid grid-cols-4 gap-3'>
           <input

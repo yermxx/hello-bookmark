@@ -4,14 +4,16 @@ import Button from '@/components/ui/Button';
 import { Popover } from '@/components/ui/Popover/Popover';
 import PopoverContent from '@/components/ui/Popover/PopoverContent';
 import PopoverTrigger from '@/components/ui/Popover/PopoverTrigger';
+import { useSession } from 'next-auth/react';
 import { LuPenLine, LuSettings, LuTrash2 } from 'react-icons/lu';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { type Book, type CreateBookInput } from '../organisms/BookmarkList';
 import BookmarkCardItem from './BookmarkCardItem';
 import ItemEditor from './ItemEditor';
 import ListEditor from './ListEditor';
 
 export type Card = {
+  highlight: string;
   url: string;
   title: string;
   description: string;
@@ -21,6 +23,7 @@ export type Card = {
 export type Item = { id: number } & Card;
 
 type Props = {
+  bookmarkId: string;
   title: string;
   cardData: Book;
   onAdd: (newCard: CreateBookInput) => Promise<Book>;
@@ -30,6 +33,7 @@ type Props = {
 };
 
 export default function BookmarkCard({
+  bookmarkId,
   title,
   cardData,
   onAdd,
@@ -37,7 +41,8 @@ export default function BookmarkCard({
   onDelete,
   onRename,
 }: Props) {
-  const [items, setItems] = useState<Item[]>([]);
+  const { data: session } = useSession();
+  const [lists, setLists] = useState<Item[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const addRef = useRef<HTMLDivElement>(null);
@@ -48,24 +53,116 @@ export default function BookmarkCard({
     }
   }, [isOpen]);
 
-  const handleAddItem = (newItem: Card) => {
-    const data: Item = {
-      id: Date.now(),
-      ...newItem,
-    };
-    setItems((prev) => [...prev, data]);
+  const fetchLists = useCallback(async (bookmarkId: string) => {
+    try {
+      const response = await fetch(`/api/bookmarks/${bookmarkId}/lists`);
+      if (!response.ok) {
+        throw new Error('Bookmark Lists fetch에 실패했습니다.');
+      }
+      const data = await response.json();
+      setLists(data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (bookmarkId) {
+      fetchLists(bookmarkId);
+    }
+  }, [bookmarkId, fetchLists]);
+
+  const addList = async (newList: Card) => {
+    try {
+      const list = {
+        userId: session?.user?.id,
+        ...newList,
+      };
+
+      const response = await fetch(`/api/bookmarks/${bookmarkId}/lists`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(list),
+      });
+
+      if (!response.ok) {
+        throw new Error('리스트 등록 실패!');
+      }
+
+      const savedList = await response.json();
+      setLists((prev) => [...prev, savedList]);
+      return savedList;
+    } catch (error) {
+      console.error('Error:', error);
+      throw error;
+    }
   };
 
-  const handleDeleteItem = (id: number) => {
-    setItems(items.filter((item) => item.id !== id));
-    // localStorage.removeItem(`bookmarkCard_${title}`);
+  const deleteList = async (listId: number) => {
+    try {
+      const response = await fetch(
+        `/api/bookmarks/${bookmarkId}/lists/${listId}`,
+        {
+          method: 'DELETE',
+        }
+      );
+      if (response.ok) {
+        setLists(lists.filter((item) => item.id !== listId));
+      }
+    } catch (error) {
+      console.error('Error', error);
+    }
   };
 
-  const handleEditItem = (id: number, updateData: Card) => {
-    setItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...updateData, id } : item))
-    );
+  const updateList = async (
+    listId: number,
+    { url, title, image, description, highlight }: Card
+  ) => {
+    try {
+      const response = await fetch(
+        `/api/bookmarks/${bookmarkId}/lists/${listId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url, title, image, description, highlight }),
+        }
+      );
+
+      if (response.ok) {
+        setLists(
+          lists.map((list) =>
+            list.id === listId
+              ? { ...list, url, title, image, description, highlight }
+              : list
+          )
+        );
+        setIsOpen(false);
+      }
+    } catch (error) {
+      console.error('Error', error);
+    }
   };
+
+  // const handleAddItem = (newItem: Card) => {
+  //   const data: Item = {
+  //     id: Date.now(),
+  //     ...newItem,
+  //   };
+  //   setLists((prev) => [...prev, data]);
+  // };
+
+  // const handleDeleteItem = (id: number) => {
+  //   setLists(lists.filter((item) => item.id !== id));
+  //   // localStorage.removeItem(`bookmarkCard_${title}`);
+  // };
+
+  // const handleEditItem = (id: number, updateData: Card) => {
+  //   setLists((prev) =>
+  //     prev.map((item) => (item.id === id ? { ...updateData, id } : item))
+  //   );
+  // };
 
   return (
     <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
@@ -128,16 +225,17 @@ export default function BookmarkCard({
       <div className='overflow-y-auto flex-1'>
         <div>
           <ul className='space-y-3.5'>
-            {items.map((item) => (
-              <li key={item.id}>
+            {lists.map((list) => (
+              <li key={list.id}>
                 <BookmarkCardItem
-                  id={item.id}
-                  url={item.url}
-                  title={item.title}
-                  description={item.description}
-                  image={item.image}
-                  onEdit={handleEditItem}
-                  onDelete={handleDeleteItem}
+                  id={list.id}
+                  url={list.url}
+                  title={list.title}
+                  description={list.description}
+                  image={list.image}
+                  onEdit={updateList}
+                  onDelete={deleteList}
+                  highlight={list.highlight}
                 />
               </li>
             ))}
@@ -145,10 +243,10 @@ export default function BookmarkCard({
           {isOpen && (
             <div ref={addRef}>
               <ItemEditor
-                onSubmit={handleAddItem}
+                onSubmit={(data) => addList(data)}
                 onClose={() => setIsOpen(false)}
-                onDelete={handleDeleteItem}
-                onEdit={handleEditItem}
+                onDelete={deleteList}
+                onEdit={updateList}
               />
             </div>
           )}

@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@/components/ui/Button';
 import { Popover } from '@/components/ui/Popover/Popover';
 import PopoverContent from '@/components/ui/Popover/PopoverContent';
 import PopoverTrigger from '@/components/ui/Popover/PopoverTrigger';
+import Button from '@/components/ui/SolidButton';
 import { useSession } from 'next-auth/react';
 import { LuPenLine, LuSettings, LuTrash2 } from 'react-icons/lu';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -30,6 +30,7 @@ type Props = {
   onClose: () => void;
   onDelete: (id: number) => void;
   onRename: (cardId: number, newTitle: string) => void;
+  bgColor: string;
 };
 
 export default function BookmarkCard({
@@ -40,6 +41,7 @@ export default function BookmarkCard({
   onClose,
   onDelete,
   onRename,
+  bgColor,
 }: Props) {
   const { data: session } = useSession();
   const [lists, setLists] = useState<Item[]>([]);
@@ -145,36 +147,23 @@ export default function BookmarkCard({
     }
   };
 
-  // const handleAddItem = (newItem: Card) => {
-  //   const data: Item = {
-  //     id: Date.now(),
-  //     ...newItem,
-  //   };
-  //   setLists((prev) => [...prev, data]);
-  // };
-
-  // const handleDeleteItem = (id: number) => {
-  //   setLists(lists.filter((item) => item.id !== id));
-  //   // localStorage.removeItem(`bookmarkCard_${title}`);
-  // };
-
-  // const handleEditItem = (id: number, updateData: Card) => {
-  //   setLists((prev) =>
-  //     prev.map((item) => (item.id === id ? { ...updateData, id } : item))
-  //   );
-  // };
-
   return (
-    <div className='flex flex-col border border-black p-2 rounded-md h-[500px] w-[300px] flex-shrink-0'>
+    <div
+      className={`${bgColor} flex flex-col border border-gray-200 p-2 rounded-md h-full w-96 flex-shrink-0`}
+    >
       <div className='grid grid-cols-3 items-center'>
-        <p className='font-bold p-4 text-2xl col-span-2 text-left px-8'>
+        <p
+          className={`${bgColor === 'bg-blue-500' || bgColor === 'bg-green-700' ? 'text-white' : 'text-black'} font-bold p-4 text-xl col-span-2 text-left px-8`}
+        >
           {title}
         </p>
         <div className='flex col-span-1 justify-end p-4'>
           <Popover>
             <PopoverTrigger asChild>
               <button>
-                <LuSettings />
+                <LuSettings
+                  color={`${bgColor === 'bg-blue-500' || bgColor === 'bg-green-700' ? 'white' : 'black'}`}
+                />
               </button>
             </PopoverTrigger>
             <PopoverContent>

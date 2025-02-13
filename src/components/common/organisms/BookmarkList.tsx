@@ -37,6 +37,20 @@ export default function BookmarkList({
   const [cards, setCards] = useState<Book[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
+  const colors = {
+    blue: 'bg-blue-500',
+    yellow: 'bg-yellow-400',
+    orange: 'bg-orange-500',
+    green: 'bg-green-700',
+    violet: 'bg-violet-200',
+  };
+
+  const getColorById = (id: number) => {
+    const colorValues = Object.values(colors);
+    const index = id % colorValues.length;
+    return colorValues[index];
+  };
+
   useEffect(() => {
     if (session?.user?.id) {
       console.log('Session user ID:', session.user.id); // 세션 ID 확인
@@ -148,9 +162,9 @@ export default function BookmarkList({
 
   return (
     <>
-      <ul className='flex gap-3 p-3'>
+      <ul className='flex gap-5 p-3 h-full overflow-auto flex-1'>
         {cards.map((card) => (
-          <li key={card.id}>
+          <li key={card.id} className='h-full'>
             <BookmarkCard
               bookmarkId={card.id.toString()}
               title={card.title}
@@ -159,6 +173,7 @@ export default function BookmarkList({
               onDelete={() => deleteCard(card.id)}
               onRename={updateCard}
               onClose={() => setIsOpen(!isOpen)}
+              bgColor={getColorById(card.id)}
             />
           </li>
         ))}

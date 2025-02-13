@@ -110,7 +110,7 @@ export default function ItemEditor({
     <form
       ref={itemRef}
       onSubmit={handleSubmit}
-      className='border border-black rounded-lg p-4'
+      className='border border-black rounded-lg p-4 bg-white'
     >
       <div ref={containerRef} className='flex flex-col mb-4'>
         <Highlight

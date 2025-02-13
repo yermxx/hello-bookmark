@@ -1,4 +1,5 @@
 import Nav from '@/components/Nav';
+import { SessionProvider } from 'next-auth/react';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -24,15 +25,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='ko'>
-      <body className='font-serif'>
-        <header>
-          <Nav />
-        </header>
-        <hr />
-        <main>{children}</main>
-        <hr />
-        <footer className='mt-2 text-center bottom-0'>©yrlee</footer>
+    <html lang='ko' className='h-full'>
+      <body className='font-serif bg-gray-50 h-full flex flex-col'>
+        <SessionProvider>
+          <header>
+            <Nav />
+          </header>
+          <hr />
+          <main className='flex-1 h-full'>{children}</main>
+          <hr />
+          <footer className='border-t border-black p-2 text-center bottom-0'>
+            ©2025 | yrlee
+          </footer>
+        </SessionProvider>
       </body>
     </html>
   );

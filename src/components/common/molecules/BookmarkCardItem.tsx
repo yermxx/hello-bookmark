@@ -30,7 +30,9 @@ export default function BookmarkCardItem({
   return (
     <>
       {!isEditing && (
-        <div className='border border-gray-400 rounded-lg p-4 flex justify-between items-center gap-3 m-2'>
+        <div
+          className={`border border-gray-200 rounded-lg p-4 flex justify-between items-center m-2 bg-white h-28`}
+        >
           <div className='shrink-0'>
             <Image
               src={image}
@@ -46,7 +48,7 @@ export default function BookmarkCardItem({
               href={url}
               target='_blank'
               rel='noopener noreferrer'
-              className='font-semibold overflow-hidden whitespace-nowrap mb-0.5 text-ellipsis block w-full'
+              className='font-semibold overflow-hidden whitespace-nowrap mb-1 text-ellipsis block w-full'
             >
               <span className={`inline-block w-fit ${highlight}`}>{title}</span>
             </a>

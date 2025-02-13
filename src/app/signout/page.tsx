@@ -1,4 +1,4 @@
-import Button from '@/components/ui/Button';
+import SolidButton from '@/components/ui/SolidButton';
 import { redirect } from 'next/navigation';
 import { auth, signOut } from '@/lib/auth';
 import { deleteNaverToken } from '../../../actions/sign';
@@ -33,13 +33,12 @@ export default async function SignOutPage() {
           <p className='text-xl text-stone-500 text-center p-4 mb-2'>
             Are you sure you want to sign out?
           </p>
-          <Button
+          <SolidButton
             type='submit'
             className='flex mx-auto border border-black hover:border-0 hover:bg-gray-400 text-black text-lg rounded-xl px-12 py-2'
           >
             Sign out →
-          </Button>
-          {/* <SignOutButton provider={session?.provider} /> */}
+          </SolidButton>
         </form>
       </div>
     </div>

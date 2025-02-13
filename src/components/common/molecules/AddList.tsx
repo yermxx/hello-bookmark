@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/components/ui/Button';
+import SolidButton from '@/components/ui/SolidButton';
 import { TbRun } from 'react-icons/tb';
 import { useState } from 'react';
 import { type Book, type CreateBookInput } from '../organisms/BookmarkList';
@@ -28,13 +28,13 @@ export default function AddList({
   return (
     <>
       {!isOpen && (
-        <Button
+        <SolidButton
           type='button'
           onClick={() => setIsOpen(true)}
           className='flex items-center justify-center self-start m-3'
         >
           {lists?.length === 0 ? '+Add List' : '+Add another list..'} <TbRun />
-        </Button>
+        </SolidButton>
       )}
       {isOpen && (
         <ListEditor

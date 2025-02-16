@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/components/ui/Button';
+import SolidButton from '@/components/ui/SolidButton';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { BiLogoGoogle, BiLogoGithub } from 'react-icons/bi';
@@ -44,10 +44,13 @@ export default function Login({ signin }: Props) {
             <Input id='pw' ref={pwRef} />
           </div>
           <div className='flex justify-end mb-10'>
-            <Button className='flex items-center justify-center px-5 my-3 text-lg gap-1'>
+            <SolidButton
+              type='submit'
+              className='flex items-center justify-center px-5 my-3 text-lg gap-1'
+            >
               <p>Sign in</p>
               <PiSignIn />
-            </Button>
+            </SolidButton>
           </div>
         </form>
         <br />

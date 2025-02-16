@@ -38,11 +38,12 @@ export default function BookmarkList({
   const [isOpen, setIsOpen] = useState(false);
 
   const colors = {
-    blue: 'bg-blue-500',
-    yellow: 'bg-yellow-400',
-    orange: 'bg-orange-500',
-    green: 'bg-green-700',
+    blue: 'bg-blue-200',
+    yellow: 'bg-yellow-200',
+    red: 'bg-red-200',
+    lime: 'bg-lime-200',
     violet: 'bg-violet-200',
+    white: 'bg-white',
   };
 
   const getColorById = (id: number) => {

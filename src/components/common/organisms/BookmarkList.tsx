@@ -8,7 +8,7 @@ import BookmarkCard from '../molecules/BookmarkCard';
 // export type ListTitle = { title: string };
 // export type List = { id: number } & ListTitle;
 
-export type Book = {
+export type Bookmark = {
   id: number;
   title: string;
   deletedAt: Date | null;
@@ -17,7 +17,7 @@ export type Book = {
 
 type Props = {
   title: string;
-  cardData: Book;
+  cardData: Bookmark;
   onDelete: (id: number) => void;
   onRename: (cardId: number, newTitle: string) => void;
 };
@@ -34,7 +34,7 @@ export default function BookmarkList({
   onRename,
 }: Props) {
   const { data: session } = useSession();
-  const [cards, setCards] = useState<Book[]>([]);
+  const [cards, setCards] = useState<Bookmark[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const colors = {

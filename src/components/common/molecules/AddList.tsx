@@ -3,14 +3,14 @@
 import SolidButton from '@/components/ui/SolidButton';
 import { TbRun } from 'react-icons/tb';
 import { useState } from 'react';
-import { type Book, type CreateBookInput } from '../organisms/BookmarkList';
+import { type Bookmark, type CreateBookInput } from '../organisms/BookmarkList';
 import ListEditor from './ListEditor';
 
 type Props = {
   title: string;
-  lists: Book[];
-  cardData: Book;
-  onAdd: (newCard: CreateBookInput) => Promise<Book>;
+  lists: Bookmark[];
+  cardData: Bookmark;
+  onAdd: (newCard: CreateBookInput) => Promise<Bookmark>;
   onClose?: () => void;
   onDelete?: (id: number) => void;
   onRename: (cardId: number, newTitle: string) => void;

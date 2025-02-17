@@ -3,14 +3,14 @@ import { useSession } from 'next-auth/react';
 import { HiOutlineX } from 'react-icons/hi';
 import { HiMiniArrowDownTray } from 'react-icons/hi2';
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
-import { type Book, type CreateBookInput } from '../organisms/BookmarkList';
+import { type Bookmark, type CreateBookInput } from '../organisms/BookmarkList';
 
 // import BookmarkCard from './BookmarkCard';
 
 type Props = {
   title?: string;
-  cardData: Book;
-  onAdd: (newCard: CreateBookInput) => Promise<Book>;
+  cardData: Bookmark;
+  onAdd: (newCard: CreateBookInput) => Promise<Bookmark>;
   onClose: () => void;
   onRename: (cardId: number, newTitle: string) => void;
 };

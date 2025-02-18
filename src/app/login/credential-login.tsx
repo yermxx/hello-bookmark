@@ -52,6 +52,7 @@ export default function CredentialLogin() {
         redirect: false,
       });
       if (result?.error) {
+        alert('로그인이 실패했습니다.');
         console.error('로그인 실패', result.error);
       } else {
         // Main 페이지로 이동
@@ -59,6 +60,7 @@ export default function CredentialLogin() {
         router.refresh();
       }
     } catch (error) {
+      alert('로그인 처리 중 에러가 발생했습니다.');
       console.error('로그인 처리 중 에러:', error);
     }
   };

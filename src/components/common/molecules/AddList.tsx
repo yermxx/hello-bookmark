@@ -1,7 +1,9 @@
 'use client';
 
 import SolidButton from '@/components/ui/SolidButton';
+import { useSession } from 'next-auth/react';
 import { TbRun } from 'react-icons/tb';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { type Bookmark, type CreateBookInput } from '../organisms/BookmarkList';
 import ListEditor from './ListEditor';
@@ -24,13 +26,23 @@ export default function AddList({
   onRename,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
+  const { status } = useSession();
+  const router = useRouter();
+
+  console.log('Session status:', status);
 
   return (
     <>
       {!isOpen && (
         <SolidButton
           type='button'
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            if (status === 'unauthenticated') {
+              router.push('/login');
+              return;
+            }
+            setIsOpen(true);
+          }}
           className='flex items-center justify-center self-start m-3'
         >
           {lists?.length === 0 ? '+Add List' : '+Add another list..'} <TbRun />

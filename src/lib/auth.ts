@@ -1,6 +1,7 @@
 // import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { compare } from 'bcryptjs';
-import type { NextAuthConfig } from 'next-auth';
+import jwt from 'jsonwebtoken';
+import type { Account, NextAuthConfig, User } from 'next-auth';
 import NextAuth, { type Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -18,7 +19,8 @@ export const authConfig: NextAuthConfig = {
       clientSecret: process.env.AUTH_GOOGLE_SECRET as string,
       authorization: {
         params: {
-          prompt: 'select_account',
+          prompt: 'select_account consent',
+          access_type: 'offline',
         },
       },
     }),
@@ -27,17 +29,29 @@ export const authConfig: NextAuthConfig = {
       clientSecret: process.env.AUTH_GITHUB_SECRET as string,
       authorization: {
         params: {
-          prompt: 'select_account',
+          prompt: 'select_account consent',
+          access_type: 'offline',
+          scope: 'read:user user:email',
         },
       },
     }),
     NaverProvider({
       clientId: process.env.AUTH_NAVER_ID as string,
       clientSecret: process.env.AUTH_NAVER_SECRET as string,
+      authorization: {
+        params: {
+          scope: 'profile email offline_access',
+        },
+      },
     }),
     KakaoProvider({
       clientId: process.env.AUTH_KAKAO_ID as string,
       clientSecret: process.env.AUTH_KAKAO_SECRET as string,
+      authorization: {
+        params: {
+          scope: 'profile_nickname profile_image offline_access',
+        },
+      },
     }),
     CredentialsProvider({
       credentials: {
@@ -55,12 +69,18 @@ export const authConfig: NextAuthConfig = {
               email: credentials?.email as string, // type error 발생으로 타입 선언 방식으로 해결(추후 수정)
             },
           });
-          console.log('user!!!', user);
+          // console.log('user!!!', user);
 
           if (!user) {
             console.log('User found:', user);
             return null;
           }
+
+          const accessToken = jwt.sign(
+            { id: user.id, email: user.email },
+            process.env.JWT_SECRET!,
+            { expiresIn: '1h' }
+          );
 
           // type error 발생으로 타입 선언 방식으로 해결(추후 수정)
           const isPasswordValid = await compare(
@@ -78,6 +98,7 @@ export const authConfig: NextAuthConfig = {
             email: user.email,
             name: user.username,
             authType: user.authType,
+            accessToken: accessToken,
           };
         } catch (error) {
           console.error('Error:', error);
@@ -86,8 +107,10 @@ export const authConfig: NextAuthConfig = {
       },
     }),
   ],
+  secret: process.env.JWT_SECRET,
   session: {
     strategy: 'jwt',
+    maxAge: 60 * 60, // 1 hour
   },
   pages: {
     signIn: '/login',
@@ -118,27 +141,54 @@ export const authConfig: NextAuthConfig = {
       }
       return true;
     },
-    async jwt({ token, account, user }) {
-      console.log('jwt - token', token);
-      console.log('jwt - user', user);
+    async jwt({
+      token,
+      account,
+      user,
+    }: {
+      token: JWT;
+      user?: User | null;
+      account?: Account | null;
+    }) {
+      //console.log('jwt - token', token);
+      // console.log('jwt - user', user);
+      // console.log('jwt - account', account);
       if (user) {
         token.id = user.id;
         token.email = user.email;
       }
       if (account) {
         token.provider = account.provider;
+        token.refreshToken = account.refresh_token;
         token.access_token = account.access_token;
+      }
+      // Refresh token db에 저장
+      if (account?.refresh_token && typeof token.email === 'string') {
+        try {
+          await prisma.user.update({
+            where: { email: token.email },
+            data: { refreshToken: account.refresh_token },
+          });
+        } catch (error) {
+          console.error('Error updating user:', error);
+        }
       }
       return token;
     },
     async session({ session, token }: { session: Session; token?: JWT }) {
-      console.log('session - session', session);
+      // console.log('session - session', session);
       session.provider = token?.provider;
       session.access_token = token?.access_token;
-
       if (session?.user) {
         session.user.id = token?.sub as string;
         session.user.email = token?.email as string;
+      }
+      // SignOut 시, Refresh Token 삭제
+      if (session.user?.email && typeof session.user?.email === 'string') {
+        await prisma.user.update({
+          where: { email: session.user.email },
+          data: { refreshToken: null },
+        });
       }
       return session;
     },

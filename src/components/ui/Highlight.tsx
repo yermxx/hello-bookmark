@@ -22,7 +22,6 @@ export default function Highlight({
             key={key}
             onClick={(e) => {
               e.preventDefault(); // 이벤트 전파 방지
-              e.stopPropagation(); // 이벤트 전파 방지
               onChange(bgColor);
             }}
             className={`m-2 p-2 rounded-lg ${bgColor} ${

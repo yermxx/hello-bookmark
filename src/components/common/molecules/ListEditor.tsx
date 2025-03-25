@@ -50,7 +50,7 @@ export default function ListEditor({
 
         const newCard: CreateBookInput = {
           title: data,
-          userId: BigInt(session.user.id),
+          userId: +session.user.id,
         };
 
         const savedCard = await onAdd(newCard);

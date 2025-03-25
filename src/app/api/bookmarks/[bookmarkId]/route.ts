@@ -33,13 +33,7 @@ export async function GET(
       },
     });
 
-    // BigInt를 JSON으로 직렬화할 수 있도록 변환
-    const serializedBookmarks = bookmarks.map((bookmark) => ({
-      ...bookmark,
-      userId: Number(bookmark.userId), // BigInt를 Number로 변환
-    }));
-
-    return NextResponse.json(serializedBookmarks);
+    return NextResponse.json(bookmarks);
   } catch (error) {
     console.error('Get error: ', error);
     return NextResponse.json(
@@ -97,7 +91,6 @@ export async function DELETE(
       where: { id },
     });
 
-    // BigInt 직렬화 문제 해결) 반환값을 JSON으로 직접 보내는 대신, 단순 성공/실패 메시지만 반환!
     return NextResponse.json({ success: true, message: 'Bookmark deleted' });
   } catch (error) {
     console.error('Delete error: ', error);

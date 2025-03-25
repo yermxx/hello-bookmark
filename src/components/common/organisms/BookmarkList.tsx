@@ -12,7 +12,7 @@ export type Bookmark = {
   id: number;
   title: string;
   deletedAt: Date | null;
-  userId: number | bigint; // bigint 타입도 처리할 수 있도록
+  userId: number;
 };
 
 type Props = {
@@ -24,7 +24,7 @@ type Props = {
 
 export type CreateBookInput = {
   title: string;
-  userId: number | bigint;
+  userId: number;
 };
 
 export default function BookmarkList({

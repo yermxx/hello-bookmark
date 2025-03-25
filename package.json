@@ -39,6 +39,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "i18next": "^24.2.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.468.0",
     "mysql2": "^3.11.5",
     "next": "14.2.20",
@@ -52,7 +53,8 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^11.0.3",
     "zod": "^3.24.1",
-    "zod-i18n-map": "^2.27.0"
+    "zod-i18n-map": "^2.27.0",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.4",
@@ -64,6 +66,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/eslint__eslintrc": "^2.1.2",
     "@types/eslint__js": "^8.42.3",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

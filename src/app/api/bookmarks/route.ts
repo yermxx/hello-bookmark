@@ -8,13 +8,7 @@ export async function GET(_request: Request) {
   try {
     const bookmarks = await prisma.book.findMany();
 
-    // BigInt를 JSON으로 직렬화할 수 있도록 변환
-    const serializedBookmarks = bookmarks.map((bookmark) => ({
-      ...bookmark,
-      userId: bookmark.userId.toString(),
-    }));
-
-    return NextResponse.json(serializedBookmarks);
+    return NextResponse.json(bookmarks);
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -45,13 +39,7 @@ export const POST = async (req: NextRequest) => {
       },
     });
 
-    // BigInt -> Number로 변환하여 직렬화 처리
-    const serializedBookmark = {
-      ...bookmark,
-      userId: Number(bookmark.userId),
-    };
-
-    return NextResponse.json(serializedBookmark);
+    return NextResponse.json(bookmark);
   } catch (error) {
     console.error('Server error:', error);
     return NextResponse.json(
